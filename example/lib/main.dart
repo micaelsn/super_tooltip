@@ -3,18 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'Flutter Demo',
-      theme: new ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(),
+      home: MyHomePage(),
     );
   }
 }
@@ -24,15 +24,15 @@ class MyHomePage extends StatefulWidget {
     Key? key,
   }) : super(key: key);
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.red,
-      body: new Center(child: TargetWidget()),
+      body: Center(child: TargetWidget()),
     );
   }
 }
@@ -41,7 +41,7 @@ class TargetWidget extends StatefulWidget {
   const TargetWidget({Key? key}) : super(key: key);
 
   @override
-  _TargetWidgetState createState() => new _TargetWidgetState();
+  _TargetWidgetState createState() => _TargetWidgetState();
 }
 
 class _TargetWidgetState extends State<TargetWidget> {
@@ -63,33 +63,44 @@ class _TargetWidgetState extends State<TargetWidget> {
       return;
     }
 
-    var renderBox = context.findRenderObject() as RenderBox;
-    final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox?;
+    final renderBox = context.findRenderObject() as RenderBox;
+    final overlay =
+        Overlay.of(context)!.context.findRenderObject() as RenderBox?;
 
-    var targetGlobalCenter = renderBox
+    final targetGlobalCenter = renderBox
         .localToGlobal(renderBox.size.center(Offset.zero), ancestor: overlay);
 
     // We create the tooltip on the first use
     tooltip = SuperTooltip(
-      popupDirection: TooltipDirection.left,
-      arrowTipDistance: 15.0,
-      arrowBaseWidth: 40.0,
-      arrowLength: 40.0,
-      borderColor: Colors.green,
-      borderWidth: 5.0,
-      snapsFarAwayVertically: true,
-      showCloseButton: ShowCloseButton.inside,
-      hasShadow: false,
-      touchThrougArea: new Rect.fromLTWH(targetGlobalCenter.dx - 100,
-          targetGlobalCenter.dy - 100, 200.0, 160.0),
-      touchThroughAreaShape: ClipAreaShape.rectangle,
-      content: new Material(
+      popupDirection: TooltipDirection.up,
+      pointerDecoration: const PointerDecoration(
+        minDistance: 15,
+        baseWidth: 40,
+        height: 40,
+      ),
+      borderDecoration: const BorderDecoration(
+        color: Colors.green,
+        width: 5,
+      ),
+      tipPosition: TipPosition.snapTo(SnapToSpace.vertical),
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black,
+          blurRadius: 3,
+        )
+      ],
+      background: TipBackground(
+          touchThrough: TouchThrough.rect(
+        area: Rect.fromLTWH(targetGlobalCenter.dx - 100,
+            targetGlobalCenter.dy - 100, 200.0, 160.0),
+      )),
+      content: const Material(
           child: Padding(
-        padding: const EdgeInsets.only(top: 20.0),
+        padding: EdgeInsets.only(top: 20.0),
         child: Text(
-          "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "
-          "sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, "
-          "sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ",
+          'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, '
+          'sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, '
+          'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ',
           softWrap: true,
         ),
       )),
@@ -100,14 +111,14 @@ class _TargetWidgetState extends State<TargetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return new WillPopScope(
+    return WillPopScope(
       onWillPop: _willPopCallback,
-      child: new GestureDetector(
+      child: GestureDetector(
         onTap: onTap,
         child: Container(
-            width: 20.0,
-            height: 20.0,
-            decoration: new BoxDecoration(
+            width: 100.0,
+            height: 100.0,
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.blue,
             )),
