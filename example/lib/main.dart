@@ -91,8 +91,12 @@ class _TargetWidgetState extends State<TargetWidget> {
       ],
       background: TipBackground(
           touchThrough: TouchThrough.rect(
-        area: Rect.fromLTWH(targetGlobalCenter.dx - 100,
-            targetGlobalCenter.dy - 100, 200.0, 160.0),
+        area: Rect.fromLTWH(
+          targetGlobalCenter.dx - 100,
+          targetGlobalCenter.dy - 100,
+          200.0,
+          160.0,
+        ),
       )),
       content: const Material(
           child: Padding(
