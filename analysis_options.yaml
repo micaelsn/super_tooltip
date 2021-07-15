@@ -9,6 +9,14 @@ analyzer:
 
 linter:
   rules:
+    # - public_member_api_docs
+    # - cancel_subscriptions
+    # - cascade_invocations
+    # - constant_identifier_names
+    # - implementation_imports
+    # - only_throw_errors
+    # - package_api_docs
+    # - unnecessary_lambdas
     - annotate_overrides
     - avoid_empty_else
     - avoid_function_literals_in_foreach_calls
@@ -21,17 +29,13 @@ linter:
     - avoid_unused_constructor_parameters
     - await_only_futures
     - camel_case_types
-    #- cancel_subscriptions
-    #- cascade_invocations
     - comment_references
-    #- constant_identifier_names
     - control_flow_in_finally
     - directives_ordering
     - empty_catches
     - empty_constructor_bodies
     - empty_statements
     - hash_and_equals
-    #- implementation_imports
     - invariant_booleans
     - iterable_contains_unrelated_type
     - library_names
@@ -41,22 +45,20 @@ linter:
     - no_duplicate_case_values
     - non_constant_identifier_names
     - omit_local_variable_types
-    #- only_throw_errors
     - overridden_fields
-    #- package_api_docs
     - package_names
     - package_prefixed_library_names
     - prefer_adjacent_string_concatenation
     - prefer_collection_literals
     - prefer_conditional_assignment
-    #- prefer_const_constructors
+    - prefer_const_constructors
     - prefer_contains
     - prefer_final_fields
     - prefer_initializing_formals
-    #- prefer_interpolation_to_compose_strings
+    - prefer_interpolation_to_compose_strings
     - prefer_is_empty
     - prefer_is_not_empty
-#    - prefer_single_quotes
+    - prefer_single_quotes
     - prefer_typing_uninitialized_variables
     - recursive_getters
     - slash_for_doc_comments
@@ -66,9 +68,40 @@ linter:
     - unawaited_futures
     - unnecessary_brace_in_string_interps
     - unnecessary_getters_setters
-#    - unnecessary_lambdas
     - unnecessary_null_aware_assignments
     - unnecessary_statements
-#    - unnecessary_this
+    - unnecessary_this
     - unrelated_type_equality_checks
     - valid_regexps
+    - avoid_dynamic_calls
+    - always_declare_return_types
+    - always_require_non_null_named_parameters
+    - avoid_print
+    - avoid_relative_lib_imports
+    - avoid_shadowing_type_parameters
+    - avoid_unnecessary_containers
+    - camel_case_extensions
+    - cancel_subscriptions
+    - cascade_invocations
+    - constant_identifier_names
+    - implementation_imports
+    - null_closures
+    - only_throw_errors
+    - package_api_docs
+    - prefer_const_declarations
+    - prefer_equal_for_default_values
+    - prefer_final_in_for_each
+    - prefer_final_locals
+    - prefer_for_elements_to_map_fromIterable
+    - prefer_generic_function_type_aliases
+    - prefer_if_null_operators
+    - prefer_iterable_whereType
+    - prefer_spread_collections
+    - sized_box_for_whitespace
+    - sort_constructors_first
+    - unnecessary_const
+    - unnecessary_lambdas
+    - unnecessary_new
+    - unnecessary_null_in_if_null_operators
+    - use_function_type_syntax_for_parameters
+    - use_rethrow_when_possible
