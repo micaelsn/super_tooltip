@@ -1,13 +1,14 @@
 import 'package:super_tooltip/super_tooltip.dart';
 
 class TipPosition {
-  const TipPosition._(
+  const TipPosition._({
     this.left,
     this.top,
     this.right,
     this.bottom,
-    this.snapTo,
-  );
+    this.snapTo = SnapToSpace.none,
+    this.direction,
+  });
 
   factory TipPosition({
     double? left,
@@ -16,11 +17,10 @@ class TipPosition {
     double? bottom,
   }) {
     return TipPosition._(
-      left,
-      top,
-      right,
-      bottom,
-      SnapToSpace.none,
+      left: left,
+      top: top,
+      right: right,
+      bottom: bottom,
     );
   }
 
@@ -31,21 +31,40 @@ class TipPosition {
     double? bottom,
   ) {
     return TipPosition._(
-      left,
-      top,
-      right,
-      bottom,
-      SnapToSpace.none,
+      left: left,
+      top: top,
+      right: right,
+      bottom: bottom,
     );
   }
 
   factory TipPosition.snapTo(SnapToSpace position) {
     return TipPosition._(
-      null,
-      null,
-      null,
-      null,
-      position,
+      snapTo: position,
+    );
+  }
+
+  static TipPosition get leftSide {
+    return const TipPosition._(
+      direction: TooltipDirection.left,
+    );
+  }
+
+  static TipPosition get rightSide {
+    return const TipPosition._(
+      direction: TooltipDirection.right,
+    );
+  }
+
+  static TipPosition get topSide {
+    return const TipPosition._(
+      direction: TooltipDirection.up,
+    );
+  }
+
+  static TipPosition get bottomSide {
+    return const TipPosition._(
+      direction: TooltipDirection.down,
     );
   }
 
@@ -56,12 +75,16 @@ class TipPosition {
   final SnapToSpace snapTo;
 
   ///
+  /// The direcion in which the tooltip should open
+  final TooltipDirection? direction;
+
+  ///
   /// If [snapsHorizontal] == true the bigger free space left or right of the target will be
-  /// covered completely by the ToolTip. All other dimension or position constraints get overwritten
+  /// covered completely by the ToolTip.
   bool get snapsHorizontal => snapTo == SnapToSpace.horizontal;
 
   ///
   /// If [snapsVertical] == true the bigger free space above or below the target will be
-  /// covered completely by the ToolTip. All other dimension or position constraints get overwritten
+  /// covered completely by the ToolTip.
   bool get snapsVertical => snapTo == SnapToSpace.vertical;
 }
