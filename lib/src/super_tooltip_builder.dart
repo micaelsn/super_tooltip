@@ -15,7 +15,6 @@ typedef ShowHandler = void Function(BuildContext targetContext,
     {OverlayState? overlay});
 
 var _isOpen = false;
-final _overlays = <OverlayEntry>[];
 
 class SuperTooltipBuilder extends StatelessWidget {
   SuperTooltipBuilder({
@@ -27,6 +26,8 @@ class SuperTooltipBuilder extends StatelessWidget {
   final TargetBuilder targetBuilder;
   final SuperTooltip tooltip;
 
+  final _overlays = <OverlayEntry>[];
+
   void _close() {
     if (tooltip.onClose != null) {
       tooltip.onClose!();
@@ -35,6 +36,7 @@ class SuperTooltipBuilder extends StatelessWidget {
     for (final overlay in _overlays) {
       overlay.remove();
     }
+    _overlays.clear();
     _isOpen = false;
   }
 
@@ -120,28 +122,26 @@ class _SuperTooltip extends StatefulWidget {
 
 class __SuperTooltipState extends State<_SuperTooltip> {
   EdgeInsets _getBalloonContainerMargin() {
-    final top =
-        (widget.tooltip.closeButtonPosition == CloseButtonPosition.outside)
-            ? (widget.tooltip.closeWidget?.preferredSize.height ?? 0) + 5
-            : 0.0;
+    final top = (widget.tooltip.closeButtonPosition?.isOutside ?? false)
+        ? (widget.tooltip.closeWidget.preferredSize.height) + 5
+        : 0.0;
+
+    final distanceAway = widget.tooltip.pointerDecoration.distanceAway;
 
     switch (widget.tooltip.popupDirection) {
       case TooltipDirection.down:
         return EdgeInsets.only(
-          top: widget.tooltip.pointerDecoration.distanceAway,
+          top: distanceAway,
         );
 
       case TooltipDirection.up:
-        return EdgeInsets.only(
-            bottom: widget.tooltip.pointerDecoration.distanceAway, top: top);
+        return EdgeInsets.only(bottom: distanceAway, top: top);
 
       case TooltipDirection.left:
-        return EdgeInsets.only(
-            right: widget.tooltip.pointerDecoration.distanceAway, top: top);
+        return EdgeInsets.only(right: distanceAway, top: top);
 
       case TooltipDirection.right:
-        return EdgeInsets.only(
-            left: widget.tooltip.pointerDecoration.distanceAway, top: top);
+        return EdgeInsets.only(left: distanceAway, top: top);
 
       default:
         throw AssertionError(widget.tooltip.popupDirection);
@@ -213,37 +213,40 @@ class __SuperTooltipState extends State<_SuperTooltip> {
             child: Stack(
               fit: StackFit.passthrough,
               children: [
-                Padding(
-                  padding: _getBalloonContainerMargin(),
-                  child: DecoratedBox(
-                    decoration: ShapeDecoration(
-                        color: widget.tooltip.background.color,
-                        shadows: widget.tooltip.boxShadow,
-                        shape: BubbleShape(
-                          direction: widget.tooltip.popupDirection,
-                          targetCenter: widget.targetCenter,
-                          borderDecoration: widget.tooltip.borderDecoration,
-                          pointerDecoration: widget.tooltip.pointerDecoration,
-                          position: TipPosition.fromLTRB(
-                            _left,
-                            _top,
-                            _right,
-                            _bottom,
-                          ),
-                        )),
-                    child: widget.tooltip.content,
+                Positioned(
+                  child: Padding(
+                    padding: _getBalloonContainerMargin(),
+                    child: DecoratedBox(
+                      decoration: ShapeDecoration(
+                          color: widget.tooltip.background.color,
+                          shadows: widget.tooltip.boxShadow,
+                          shape: BubbleShape(
+                            direction: widget.tooltip.popupDirection,
+                            targetCenter: widget.targetCenter,
+                            borderDecoration: widget.tooltip.borderDecoration,
+                            pointerDecoration: widget.tooltip.pointerDecoration,
+                            position: TipPosition.fromLTRB(
+                              _left,
+                              _top,
+                              _right,
+                              _bottom,
+                            ),
+                          )),
+                      child: widget.tooltip.content,
+                    ),
                   ),
                 ),
                 Builder(
                   builder: (context) {
                     const internalClickAreaPadding = 2.0;
+                    final closePosition = widget.tooltip.closeButtonPosition;
 
-                    if (widget.tooltip.closeWidget == null) {
+                    if (closePosition == null) {
                       return const SizedBox();
                     }
 
-                    double right;
-                    double top;
+                    double? right;
+                    double? top;
 
                     switch (widget.tooltip.popupDirection) {
                       //
@@ -251,30 +254,24 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                       case TooltipDirection.left:
                         right =
                             widget.tooltip.pointerDecoration.distanceAway + 3.0;
-                        if (widget.tooltip.closeButtonPosition ==
-                            CloseButtonPosition.inside) {
+                        if (closePosition.isInside) {
                           top = 2.0;
-                        } else if (widget.tooltip.closeButtonPosition ==
-                            CloseButtonPosition.outside) {
+                        } else if (closePosition.isOutside) {
                           top = 0.0;
                         } else
-                          throw AssertionError(
-                              widget.tooltip.closeButtonPosition);
+                          throw AssertionError(closePosition);
                         break;
 
                       // RIGHT/UP: ---------------------------------
                       case TooltipDirection.right:
                       case TooltipDirection.up:
                         right = 5.0;
-                        if (widget.tooltip.closeButtonPosition ==
-                            CloseButtonPosition.inside) {
+                        if (closePosition.isInside) {
                           top = 2.0;
-                        } else if (widget.tooltip.closeButtonPosition ==
-                            CloseButtonPosition.outside) {
+                        } else if (closePosition.isOutside) {
                           top = 0.0;
                         } else
-                          throw AssertionError(
-                              widget.tooltip.closeButtonPosition);
+                          throw AssertionError(closePosition);
                         break;
 
                       // DOWN: -------------------------------------
@@ -282,16 +279,13 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                         // If this value gets negative the Shadow gets clipped. The problem occurs is arrowlength + arrowTipDistance
                         // is smaller than _outSideCloseButtonPadding which would mean arrowLength would need to be increased if the button is ouside.
                         right = 2.0;
-                        if (widget.tooltip.closeButtonPosition ==
-                            CloseButtonPosition.inside) {
+                        if (closePosition.isInside) {
                           top = widget.tooltip.pointerDecoration.distanceAway +
                               2.0;
-                        } else if (widget.tooltip.closeButtonPosition ==
-                            CloseButtonPosition.outside) {
+                        } else if (closePosition.isOutside) {
                           top = 0.0;
                         } else
-                          throw AssertionError(
-                              widget.tooltip.closeButtonPosition);
+                          throw AssertionError(closePosition);
                         break;
                     }
 
@@ -300,11 +294,19 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                         top: top,
                         child: GestureDetector(
                           onTap: widget.close,
-                          child: Container(
-                            padding:
-                                const EdgeInsets.all(internalClickAreaPadding),
+                          child: Material(
                             color: Colors.transparent,
-                            child: widget.tooltip.closeWidget,
+                            child: Padding(
+                              padding: const EdgeInsets.all(
+                                  internalClickAreaPadding),
+                              child: GestureDetector(
+                                onTap: widget.close,
+                                child: AbsorbPointer(
+                                  absorbing: true,
+                                  child: widget.tooltip.closeWidget,
+                                ),
+                              ),
+                            ),
                           ),
                         ));
                   },
