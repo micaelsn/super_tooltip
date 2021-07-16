@@ -189,7 +189,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         opacity: opacity,
         child: Center(
           child: CustomSingleChildLayout(
-            delegate: PopupBallonLayoutDelegate(
+            delegate: PopupBalloonLayoutDelegate(
               direction: _popupDirection,
               targetCenter: widget.targetCenter,
               tipConstraints: TipConstraints(
