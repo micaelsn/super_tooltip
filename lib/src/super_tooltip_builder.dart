@@ -7,7 +7,7 @@ import 'enums.dart';
 import 'models/models.dart';
 import 'pop_up_balloon_layout_delegate.dart';
 import 'shape_overlay.dart';
-import 'super_tooltip.dart';
+import 'models/super_tooltip.model.dart';
 
 typedef TargetBuilder = Widget Function(BuildContext, ShowHandler);
 typedef ShowHandler = void Function(BuildContext targetContext,
