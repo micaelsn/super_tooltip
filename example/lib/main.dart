@@ -31,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return const Scaffold(
       backgroundColor: Colors.red,
       body: Align(
-        alignment: Alignment(0, -.75),
+        alignment: Alignment(0, .5),
         child: TargetWidget(),
       ),
     );
@@ -52,18 +52,18 @@ class _TargetWidgetState extends State<TargetWidget> {
       key: const Key('tooltip'),
       tooltip: SuperTooltip(
         pointerDecoration: const PointerDecoration(
-          distanceFromCenter: 30,
-          baseWidth: 40,
-          height: 40,
+          distanceFromCenter: 16,
+          baseWidth: 60,
+          height: 30,
         ),
-        margin: 50,
+        margin: 16,
         closeButtonPosition: CloseButtonPosition.inside,
         borderDecoration: const BorderDecoration(
-          color: Colors.red,
-          width: 5,
+          color: Colors.black,
+          width: 1,
         ),
-        tipPosition: TipPosition.snap(Snap.vertical),
-        // tipPosition: TipPosition.side(TipDirection.left),
+        constraints: const TipConstraints(maxHeight: 250),
+        tipPosition: TipPosition.side(TipDirection.right),
         background: TipBackground(
           touchThrough: TouchThrough.oval(
             area: const Rect.fromLTWH(
@@ -74,19 +74,23 @@ class _TargetWidgetState extends State<TargetWidget> {
             ),
           ),
         ),
-        content: const Padding(
-          padding: EdgeInsets.only(top: 20.0),
-          child: Text(
-            'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ',
-            softWrap: true,
+        contentBackgroundColor: Colors.pink,
+        content: const Align(
+          alignment: Alignment(0, 0),
+          child: Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: Text(
+              'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ',
+              softWrap: true,
+            ),
           ),
         ),
-        // closeWidget: const PreferredSize(
-        //   preferredSize: Size(30, 30),
-        //   child: Center(
-        //     child: Icon(Icons.delete),
-        //   ),
-        // )
+        closeWidget: const PreferredSize(
+          preferredSize: Size(30, 30),
+          child: Center(
+            child: Icon(Icons.delete),
+          ),
+        ),
       ),
       targetBuilder: (context, show) {
         return GestureDetector(
