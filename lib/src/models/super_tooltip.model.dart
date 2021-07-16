@@ -30,9 +30,6 @@ class SuperTooltip {
         tipPosition = tipPosition ?? TipPosition.snapTo(SnapToSpace.vertical),
         background = background ?? TipBackground();
 
-  /// Signals if the Tooltip is visible at the moment
-  var isOpen = false;
-
   ///
   /// The content of the Tooltip
   final Widget content;
