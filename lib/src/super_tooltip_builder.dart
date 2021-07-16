@@ -5,9 +5,9 @@ import 'animation_wrapper.dart';
 import 'bubble_shape.dart';
 import 'enums.dart';
 import 'models/models.dart';
+import 'models/super_tooltip.model.dart';
 import 'pop_up_balloon_layout_delegate.dart';
 import 'shape_overlay.dart';
-import 'models/super_tooltip.model.dart';
 
 typedef TargetBuilder = Widget Function(BuildContext, ShowHandler);
 typedef ShowHandler = void Function(BuildContext targetContext,
@@ -132,7 +132,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
       case TooltipDirection.up:
         return EdgeInsets.only(
-            bottom: 0, top: widget.tooltip.pointerDecoration.distanceAway);
+            bottom: widget.tooltip.pointerDecoration.distanceAway, top: top);
 
       case TooltipDirection.left:
         return EdgeInsets.only(
