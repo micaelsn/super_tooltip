@@ -213,29 +213,26 @@ class __SuperTooltipState extends State<_SuperTooltip> {
             child: Stack(
               fit: StackFit.passthrough,
               children: [
-                Positioned(
-                  child: Padding(
-                    padding: _getBalloonContainerMargin(),
-                    child: DecoratedBox(
-                      decoration: ShapeDecoration(
-                          color: widget.tooltip.background.color,
-                          shadows: widget.tooltip.boxShadow,
-                          shape: BubbleShape(
-                            direction: widget.tooltip.tipPosition.direction ??
-                                TooltipDirection.down,
-                            targetCenter: widget.targetCenter,
-                            borderDecoration: widget.tooltip.borderDecoration,
-                            pointerDecoration: widget.tooltip.pointerDecoration,
-                            position: TipPosition.fromLTRB(
-                              _left,
-                              _top,
-                              _right,
-                              _bottom,
-                            ),
-                          )),
-                      child: widget.tooltip.content,
-                    ),
-                  ),
+                Container(
+                  margin: _getBalloonContainerMargin(),
+                  clipBehavior: Clip.hardEdge,
+                  decoration: ShapeDecoration(
+                      color: widget.tooltip.background.color,
+                      shadows: widget.tooltip.boxShadow,
+                      shape: BubbleShape(
+                        direction: widget.tooltip.tipPosition.direction ??
+                            TooltipDirection.down,
+                        targetCenter: widget.targetCenter,
+                        borderDecoration: widget.tooltip.borderDecoration,
+                        pointerDecoration: widget.tooltip.pointerDecoration,
+                        position: TipPosition.fromLTRB(
+                          _left,
+                          _top,
+                          _right,
+                          _bottom,
+                        ),
+                      )),
+                  child: widget.tooltip.content,
                 ),
                 Builder(
                   builder: (context) {
