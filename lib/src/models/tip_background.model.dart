@@ -8,7 +8,6 @@ class TipBackground {
     this.outsideColor = const Color.fromARGB(50, 255, 255, 255),
     this.dismissible = true,
     this.absorbPointerEvents = true,
-    this.containsOverlay = true,
     this.touchThrough,
   });
 
@@ -27,10 +26,6 @@ class TipBackground {
   ///
   /// Block pointer actions or pass them through background
   final bool absorbPointerEvents;
-
-  ///
-  /// Enable background overlay
-  final bool containsOverlay;
 
   ///
   /// By default touching the surrounding of the Tooltip closes the tooltip.
