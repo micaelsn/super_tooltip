@@ -6,8 +6,8 @@ class TipPosition {
     this.top,
     this.right,
     this.bottom,
-    this.snapTo = Snap.none,
-    this.direction,
+    this.snapTo = SnapAxis.none,
+    this.direction = TipDirection.down,
   });
 
   factory TipPosition({
@@ -38,7 +38,7 @@ class TipPosition {
     );
   }
 
-  factory TipPosition.snap(Snap position) {
+  factory TipPosition.snap(SnapAxis position) {
     return TipPosition._(
       snapTo: position,
     );
@@ -52,11 +52,11 @@ class TipPosition {
   final double? left;
   final double? bottom;
   final double? right;
-  final Snap snapTo;
+  final SnapAxis snapTo;
 
   ///
   /// The direcion in which the tooltip should open
-  final TipDirection? direction;
+  final TipDirection direction;
 
   bool get isRightSide => right == 0;
   bool get isLeftSide => left == 0;
@@ -67,13 +67,13 @@ class TipPosition {
   /// If [snapsHorizontal] == true the bigger free space left or right of the target will be
   /// covered completely by the ToolTip.
   bool get snapsHorizontal =>
-      snapTo == Snap.horizontal || (left == 0 && right == 0);
+      snapTo == SnapAxis.horizontal || (left == 0 && right == 0);
 
   ///
   /// If [snapsVertical] == true the bigger free space above or below the target will be
   /// covered completely by the ToolTip.
   bool get snapsVertical =>
-      snapTo == Snap.vertical || (top == 0 && bottom == 0);
+      snapTo == SnapAxis.vertical || (top == 0 && bottom == 0);
 
   bool get hasBottomLeftRadius => left == 0 || bottom == 0;
   bool get hasBottomRightRadius => right == 0 || bottom == 0;
