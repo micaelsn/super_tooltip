@@ -14,15 +14,15 @@ class BubbleShape extends ShapeBorder {
     required this.targetCenter,
     PointerDecoration? pointerDecoration,
     BorderDecoration? borderDecoration,
-    this.position,
+    required this.position,
   })  : _borderDecoration = borderDecoration ?? const BorderDecoration(),
         _pointerDecoration = pointerDecoration ?? const PointerDecoration();
 
-  final TooltipDirection direction;
+  final TipDirection direction;
   final Offset targetCenter;
   final PointerDecoration _pointerDecoration;
   final BorderDecoration _borderDecoration;
-  final TipPosition? position;
+  final TipPosition position;
 
   @override
   EdgeInsetsGeometry get dimensions => const EdgeInsets.all(10.0);
@@ -36,50 +36,64 @@ class BubbleShape extends ShapeBorder {
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    //
     late double topLeftRadius,
         topRightRadius,
         bottomLeftRadius,
         bottomRightRadius;
 
-    Path _getLeftTopPath(Rect rect) {
+    /// starts at the bottom-left corner, and ends at the top-right corner
+    /// Bottom Left => Top Left => Top Right
+    ///
+    /// Bottom left corner & Top right corner are added
+    Path _getRightTopPath(Rect rect) {
       return Path()
+        // start at bottom left corner
         ..moveTo(rect.left, rect.bottom - bottomLeftRadius)
+        // draw to top left corner
         ..lineTo(rect.left, rect.top + topLeftRadius)
+        // add top left corner
         ..arcToPoint(Offset(rect.left + topLeftRadius, rect.top),
             radius: Radius.circular(topLeftRadius))
+        // draw to top right corner
         ..lineTo(rect.right - topRightRadius, rect.top)
+        // add top right corner
         ..arcToPoint(Offset(rect.right, rect.top + topRightRadius),
             radius: Radius.circular(topRightRadius), clockwise: true);
     }
 
+    /// starts at the bottom-left corner, and ends at the top-right corner
+    /// Bottom Left => Bottom Right => Top Right
+    ///
+    /// Bottom right corner & Top right corner are added
     Path _getBottomRightPath(Rect rect) {
       return Path()
+        // start at bottom left corner
         ..moveTo(rect.left + bottomLeftRadius, rect.bottom)
+        // draw to bottom right corner
         ..lineTo(rect.right - bottomRightRadius, rect.bottom)
+        // add bottom right corner
         ..arcToPoint(Offset(rect.right, rect.bottom - bottomRightRadius),
             radius: Radius.circular(bottomRightRadius), clockwise: false)
+        // draw to top right corner
         ..lineTo(rect.right, rect.top + topRightRadius)
+        // add top right corner
         ..arcToPoint(Offset(rect.right - topRightRadius, rect.top),
             radius: Radius.circular(topRightRadius), clockwise: false);
     }
 
-    topLeftRadius = (position?.left == 0 || position?.top == 0)
-        ? 0.0
-        : _borderDecoration.radius;
-    topRightRadius = (position?.right == 0 || position?.top == 0)
-        ? 0.0
-        : _borderDecoration.radius;
-    bottomLeftRadius = (position?.left == 0 || position?.bottom == 0)
-        ? 0.0
-        : _borderDecoration.radius;
-    bottomRightRadius = (position?.right == 0 || position?.bottom == 0)
-        ? 0.0
-        : _borderDecoration.radius;
+    topLeftRadius = position.hasTopLeftRadius ? 0.0 : _borderDecoration.radius;
+    topRightRadius =
+        position.hasTopRightRadius ? 0.0 : _borderDecoration.radius;
+    bottomLeftRadius =
+        position.hasBottomLeftRadius ? 0.0 : _borderDecoration.radius;
+    bottomRightRadius =
+        position.hasBottomRightRadius ? 0.0 : _borderDecoration.radius;
 
     switch (direction) {
-      case TooltipDirection.down:
+      // draws arrow pointing up
+      case TipDirection.down:
         return _getBottomRightPath(rect)
+          // draw to the right of the arrow
           ..lineTo(
               min(
                   max(
@@ -89,10 +103,10 @@ class BubbleShape extends ShapeBorder {
                           _pointerDecoration.baseWidth),
                   rect.right - topRightRadius),
               rect.top)
-          ..lineTo(
-              targetCenter.dx,
-              targetCenter.dy +
-                  _pointerDecoration.distanceFromCenter) // up to arrow tip   \
+          // draw to arrow tip
+          ..lineTo(targetCenter.dx,
+              targetCenter.dy + _pointerDecoration.distanceFromCenter)
+          // draw to the left of the arrow
           ..lineTo(
               max(
                   min(
@@ -101,20 +115,27 @@ class BubbleShape extends ShapeBorder {
                           topLeftRadius -
                           _pointerDecoration.baseWidth),
                   rect.left + topLeftRadius),
-              rect.top) //  down /
-
+              rect.top)
+          // to top left side
           ..lineTo(rect.left + topLeftRadius, rect.top)
+          // add top left corner
           ..arcToPoint(Offset(rect.left, rect.top + topLeftRadius),
               radius: Radius.circular(topLeftRadius), clockwise: false)
+          // to bottom left side
           ..lineTo(rect.left, rect.bottom - bottomLeftRadius)
+          // add bottom left corner
           ..arcToPoint(Offset(rect.left + bottomLeftRadius, rect.bottom),
               radius: Radius.circular(bottomLeftRadius), clockwise: false);
 
-      case TooltipDirection.up:
-        return _getLeftTopPath(rect)
+      // draws arrow pointing down
+      case TipDirection.up:
+        return _getRightTopPath(rect)
+          // draw to the bottom right
           ..lineTo(rect.right, rect.bottom - bottomRightRadius)
+          // add bottom right corner
           ..arcToPoint(Offset(rect.right - bottomRightRadius, rect.bottom),
               radius: Radius.circular(bottomRightRadius), clockwise: true)
+          // draw to the right of the arrow
           ..lineTo(
               min(
                   max(
@@ -124,11 +145,9 @@ class BubbleShape extends ShapeBorder {
                           _pointerDecoration.baseWidth),
                   rect.right - bottomRightRadius),
               rect.bottom)
-
-          // up to arrow tip   \
+          // draw to arrow tip
           ..lineTo(targetCenter.dx, targetCenter.dy - _pointerDecoration.height)
-
-          //  down /
+          // draw to the left of the arrow
           ..lineTo(
               max(
                   min(
@@ -138,15 +157,21 @@ class BubbleShape extends ShapeBorder {
                           _pointerDecoration.baseWidth),
                   rect.left + bottomLeftRadius),
               rect.bottom)
+          // draw to bottom left
           ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
+          // add bottom left corner
           ..arcToPoint(Offset(rect.left, rect.bottom - bottomLeftRadius),
               radius: Radius.circular(bottomLeftRadius), clockwise: true)
+          // draw to top right
           ..lineTo(rect.left, rect.top + topLeftRadius)
+          // add top right corner
           ..arcToPoint(Offset(rect.left + topLeftRadius, rect.top),
               radius: Radius.circular(topLeftRadius), clockwise: true);
 
-      case TooltipDirection.left:
-        return _getLeftTopPath(rect)
+      // draws arrow pointing to the right
+      case TipDirection.left:
+        return _getRightTopPath(rect)
+          // draw down to the start of the arrow
           ..lineTo(
               rect.right,
               max(
@@ -156,25 +181,33 @@ class BubbleShape extends ShapeBorder {
                           bottomRightRadius -
                           _pointerDecoration.baseWidth),
                   rect.top + topRightRadius))
-          ..lineTo(targetCenter.dx - _pointerDecoration.height,
-              targetCenter.dy) // right to arrow tip   \
-          //  left /
+          // draw to arrow tip
+          ..lineTo(targetCenter.dx - _pointerDecoration.height, targetCenter.dy)
+          // draw to the end of the arrow
           ..lineTo(
               rect.right,
               min(targetCenter.dy + _pointerDecoration.baseWidth / 2,
                   rect.bottom - bottomRightRadius))
+          // draw to bottom right
           ..lineTo(rect.right, rect.bottom - _borderDecoration.radius)
+          // add bottom right corner
           ..arcToPoint(Offset(rect.right - bottomRightRadius, rect.bottom),
               radius: Radius.circular(bottomRightRadius), clockwise: true)
+          // draw to bottom left
           ..lineTo(rect.left + bottomLeftRadius, rect.bottom)
+          // add bottom left corner
           ..arcToPoint(Offset(rect.left, rect.bottom - bottomLeftRadius),
               radius: Radius.circular(bottomLeftRadius), clockwise: true);
 
-      case TooltipDirection.right:
+      // draws arrow pointing to the left
+      case TipDirection.right:
         return _getBottomRightPath(rect)
+          // draw to top left
           ..lineTo(rect.left + topLeftRadius, rect.top)
+          // add top left corner
           ..arcToPoint(Offset(rect.left, rect.top + topLeftRadius),
               radius: Radius.circular(topLeftRadius), clockwise: false)
+          // draw to the start of the arrow
           ..lineTo(
               rect.left,
               max(
@@ -185,16 +218,18 @@ class BubbleShape extends ShapeBorder {
                           _pointerDecoration.baseWidth),
                   rect.top + topLeftRadius))
 
-          //left to arrow tip   /
+          // draw to start of arrow
           ..lineTo(
               targetCenter.dx + _pointerDecoration.baseWidth, targetCenter.dy)
 
-          //  right \
+          //  draw to end of arrow
           ..lineTo(
               rect.left,
               min(targetCenter.dy + _pointerDecoration.baseWidth / 2,
                   rect.bottom - bottomLeftRadius))
+          // draw to bottom left
           ..lineTo(rect.left, rect.bottom - bottomLeftRadius)
+          // add bottom left corner
           ..arcToPoint(Offset(rect.left + bottomLeftRadius, rect.bottom),
               radius: Radius.circular(bottomLeftRadius), clockwise: false);
 
@@ -205,6 +240,7 @@ class BubbleShape extends ShapeBorder {
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    // adds a border
     var paint = Paint()
       ..color = _borderDecoration.color
       ..style = PaintingStyle.stroke
@@ -216,8 +252,10 @@ class BubbleShape extends ShapeBorder {
       ..style = PaintingStyle.stroke
       ..strokeWidth = _borderDecoration.width;
 
-    if (position?.right == 0.0) {
-      if (position?.top == 0.0 && position?.bottom == 0.0) {
+    // if the position snaps, we draw the tooltip here
+    // if it doesn't snap, nothing is drawn here
+    if (position.isRightSide) {
+      if (position.snapsVertical) {
         canvas.drawPath(
             Path()
               ..moveTo(rect.right, rect.top)
@@ -231,8 +269,8 @@ class BubbleShape extends ShapeBorder {
             paint);
       }
     }
-    if (position?.left == 0.0) {
-      if (position?.top == 0.0 && position?.bottom == 0.0) {
+    if (position.isLeftSide) {
+      if (position.snapsVertical) {
         canvas.drawPath(
             Path()
               ..moveTo(rect.left, rect.top)
@@ -246,8 +284,8 @@ class BubbleShape extends ShapeBorder {
             paint);
       }
     }
-    if (position?.top == 0.0) {
-      if (position?.left == 0.0 && position?.right == 0.0) {
+    if (position.isTopSide) {
+      if (position.snapsHorizontal) {
         canvas.drawPath(
             Path()
               ..moveTo(rect.right, rect.top)
@@ -261,8 +299,8 @@ class BubbleShape extends ShapeBorder {
             paint);
       }
     }
-    if (position?.bottom == 0.0) {
-      if (position?.left == 0.0 && position?.right == 0.0) {
+    if (position.isBottomSide) {
+      if (position.snapsHorizontal) {
         canvas.drawPath(
             Path()
               ..moveTo(rect.right, rect.bottom)
