@@ -15,6 +15,7 @@ class BubbleShape extends ShapeBorder {
     PointerDecoration? pointerDecoration,
     BorderDecoration? borderDecoration,
     required this.position,
+    required this.backgroundColor,
   })  : _borderDecoration = borderDecoration ?? const BorderDecoration(),
         _pointerDecoration = pointerDecoration ?? const PointerDecoration();
 
@@ -23,6 +24,7 @@ class BubbleShape extends ShapeBorder {
   final PointerDecoration _pointerDecoration;
   final BorderDecoration _borderDecoration;
   final TipPosition position;
+  final Color backgroundColor;
 
   @override
   EdgeInsetsGeometry get dimensions => const EdgeInsets.all(10.0);
@@ -104,8 +106,7 @@ class BubbleShape extends ShapeBorder {
                   rect.right - topRightRadius),
               rect.top)
           // draw to arrow tip
-          ..lineTo(targetCenter.dx,
-              targetCenter.dy + _pointerDecoration.distanceFromCenter)
+          ..lineTo(targetCenter.dx, targetCenter.dy + _pointerDecoration.height)
           // draw to the left of the arrow
           ..lineTo(
               max(
@@ -146,7 +147,8 @@ class BubbleShape extends ShapeBorder {
                   rect.right - bottomRightRadius),
               rect.bottom)
           // draw to arrow tip
-          ..lineTo(targetCenter.dx, targetCenter.dy - _pointerDecoration.height)
+          ..lineTo(targetCenter.dx,
+              targetCenter.dy - _pointerDecoration.distanceFromCenter)
           // draw to the left of the arrow
           ..lineTo(
               max(
@@ -182,7 +184,8 @@ class BubbleShape extends ShapeBorder {
                           _pointerDecoration.baseWidth),
                   rect.top + topRightRadius))
           // draw to arrow tip
-          ..lineTo(targetCenter.dx - _pointerDecoration.height, targetCenter.dy)
+          ..lineTo(targetCenter.dx - _pointerDecoration.distanceFromCenter,
+              targetCenter.dy)
           // draw to the end of the arrow
           ..lineTo(
               rect.right,
@@ -248,11 +251,11 @@ class BubbleShape extends ShapeBorder {
 
     canvas.drawPath(getOuterPath(rect), paint);
     paint = Paint()
-      ..color = Colors.white
+      ..color = backgroundColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = _borderDecoration.width;
 
-    // if the position snaps, we draw the tooltip here
+    // if the position snaps, we need to overlap the border with the background color
     // if it doesn't snap, nothing is drawn here
     if (position.isRightSide) {
       if (position.snapsVertical) {
@@ -319,6 +322,7 @@ class BubbleShape extends ShapeBorder {
   @override
   ShapeBorder scale(double t) {
     return BubbleShape(
+      backgroundColor: backgroundColor,
       direction: direction,
       targetCenter: targetCenter,
       borderDecoration: _borderDecoration,
