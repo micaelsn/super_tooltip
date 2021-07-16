@@ -20,7 +20,7 @@ class SuperTooltip {
     this.borderDecoration,
     this.pointerDecoration = const PointerDecoration(),
     this.background,
-    this.contentBackgroundColor,
+    this.contentBackgroundColor = Colors.white,
     TipPosition? tipPosition,
     PreferredSize? closeWidget,
   })  : assert((constraints?.maxWidth ?? double.infinity) >=
@@ -80,5 +80,5 @@ class SuperTooltip {
   /// The background of the Tooltip
   final TipBackground? background;
 
-  final Color? contentBackgroundColor;
+  final Color contentBackgroundColor;
 }
