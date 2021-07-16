@@ -14,20 +14,20 @@ class SuperTooltip {
     required this.content, // The contents of the tooltip.
     this.onClose,
     this.constraints,
-    TipPosition? tipPosition,
-    this.minimumOutSidePadding = 20.0,
+    this.margin = 16.0,
     this.closeButtonPosition = CloseButtonPosition.inside,
     this.boxShadow,
     this.borderDecoration,
     this.pointerDecoration = const PointerDecoration(),
+    this.background,
+    this.contentBackgroundColor,
+    TipPosition? tipPosition,
     PreferredSize? closeWidget,
-    TipBackground? background,
   })  : assert((constraints?.maxWidth ?? double.infinity) >=
             (constraints?.minWidth ?? 0.0)),
         assert((constraints?.maxHeight ?? double.infinity) >=
             (constraints?.minHeight ?? 0.0)),
-        tipPosition = tipPosition ?? TipPosition.snapTo(SnapToSpace.vertical),
-        background = background ?? TipBackground(),
+        tipPosition = tipPosition ?? TipPosition.side(TipDirection.down),
         closeWidget = closeWidget ??
             const PreferredSize(
               preferredSize: Size.fromHeight(35),
@@ -49,7 +49,7 @@ class SuperTooltip {
 
   ///
   /// The minium padding from the Tooltip to the screen limits
-  final double minimumOutSidePadding;
+  final double margin;
 
   /// [tipPosition] positions the Tooltip screen
   final TipPosition tipPosition;
@@ -78,5 +78,7 @@ class SuperTooltip {
 
   ///
   /// The background of the Tooltip
-  final TipBackground background;
+  final TipBackground? background;
+
+  final Color? contentBackgroundColor;
 }
