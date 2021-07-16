@@ -21,14 +21,19 @@ class SuperTooltip {
     this.boxShadow,
     this.borderDecoration,
     this.pointerDecoration = const PointerDecoration(),
-    this.closeWidget,
+    PreferredSize? closeWidget,
     TipBackground? background,
   })  : assert((constraints?.maxWidth ?? double.infinity) >=
             (constraints?.minWidth ?? 0.0)),
         assert((constraints?.maxHeight ?? double.infinity) >=
             (constraints?.minHeight ?? 0.0)),
         tipPosition = tipPosition ?? TipPosition.snapTo(SnapToSpace.vertical),
-        background = background ?? TipBackground();
+        background = background ?? TipBackground(),
+        closeWidget = closeWidget ??
+            const PreferredSize(
+              preferredSize: Size.fromHeight(35),
+              child: Icon(Icons.close),
+            );
 
   ///
   /// The content of the Tooltip
@@ -55,8 +60,8 @@ class SuperTooltip {
   final TipPosition tipPosition;
 
   ///
-  /// The position of the close button
-  final CloseButtonPosition closeButtonPosition;
+  /// The position of the close button, set to null to hide the close button
+  final CloseButtonPosition? closeButtonPosition;
 
   ///
   /// [boxShadow] defines the tooltip shadow
@@ -73,8 +78,8 @@ class SuperTooltip {
   ///
   /// The widget that is used to close the Tooltip
   ///
-  /// if null, the Tooltip will not have a close button
-  final PreferredSize? closeWidget;
+  /// uses Icon(Icons.close) by default
+  final PreferredSize closeWidget;
 
   ///
   /// The background of the Tooltip
