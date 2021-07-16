@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'enums.dart';
-import 'models/absolute_position.model.dart';
 import 'models/border_decoration.model.dart';
 import 'models/pointer_decoration.model.dart';
+import 'models/tip_position.model.dart';
 
 class BubbleShape extends ShapeBorder {
   BubbleShape({
@@ -92,7 +92,7 @@ class BubbleShape extends ShapeBorder {
           ..lineTo(
               targetCenter.dx,
               targetCenter.dy +
-                  _pointerDecoration.minDistance) // up to arrow tip   \
+                  _pointerDecoration.distanceFromCenter) // up to arrow tip   \
           ..lineTo(
               max(
                   min(
