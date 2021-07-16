@@ -7,8 +7,8 @@ import 'package:super_tooltip/super_tooltip.dart';
 
 import 'enums.dart';
 
-class PopupBallonLayoutDelegate extends SingleChildLayoutDelegate {
-  PopupBallonLayoutDelegate({
+class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
+  PopupBalloonLayoutDelegate({
     this.direction,
     this.targetCenter,
     this.tipConstraints,
@@ -26,8 +26,9 @@ class PopupBallonLayoutDelegate extends SingleChildLayoutDelegate {
   Offset getPositionForChild(Size size, Size childSize) {
     double? calcLeftMostXtoTarget() {
       double? leftMostXtoTarget;
-      if (position?.left != null) {
-        leftMostXtoTarget = position?.left;
+      final left = position?.left;
+      if (left != null) {
+        leftMostXtoTarget = left;
       } else if (position?.right != null) {
         leftMostXtoTarget = max(
             size.topLeft(Offset.zero).dx + outSidePadding!,
@@ -104,15 +105,15 @@ class PopupBallonLayoutDelegate extends SingleChildLayoutDelegate {
     var calcMaxHeight = tipConstraints?.maxHeight ?? double.infinity;
 
     void calcMinMaxWidth() {
-      if (position?.left != null && position?.right != null) {
-        calcMaxWidth =
-            constraints.maxWidth - (position!.left! + position!.right!);
-      } else if ((position?.left != null && position?.right == null) ||
-          (position?.left == null && position?.right != null)) {
+      final left = position?.left;
+      final right = position?.right;
+
+      if (left != null && right != null) {
+        calcMaxWidth = constraints.maxWidth - (left + right);
+      } else if ((left != null && right == null) ||
+          (left == null && right != null)) {
         // make sure that the sum of left, right + maxwidth isn't bigger than the screen width.
-        final sideDelta = (position?.left ?? 0.0) +
-            (position?.right ?? 0.0) +
-            outSidePadding!;
+        final sideDelta = (left ?? 0.0) + (right ?? 0.0) + outSidePadding!;
         if (calcMaxWidth > constraints.maxWidth - sideDelta) {
           calcMaxWidth = constraints.maxWidth - sideDelta;
         }
