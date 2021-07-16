@@ -9,40 +9,42 @@ import 'enums.dart';
 
 class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
   PopupBalloonLayoutDelegate({
-    this.direction,
-    this.targetCenter,
+    required this.targetCenter,
+    required this.direction,
     this.tipConstraints,
-    this.outSidePadding,
+    this.outSidePadding = 0,
     this.position,
   });
 
-  final TooltipDirection? direction;
-  final Offset? targetCenter;
+  final Offset targetCenter;
+  final TooltipDirection direction;
   final TipConstraints? tipConstraints;
   final TipPosition? position;
-  final double? outSidePadding;
+  final double outSidePadding;
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
     double? calcLeftMostXtoTarget() {
       double? leftMostXtoTarget;
       final left = position?.left;
+      final right = position?.right;
+
       if (left != null) {
         leftMostXtoTarget = left;
-      } else if (position?.right != null) {
+      } else if (right != null) {
         leftMostXtoTarget = max(
-            size.topLeft(Offset.zero).dx + outSidePadding!,
+            size.topLeft(Offset.zero).dx + outSidePadding,
             size.topRight(Offset.zero).dx -
-                outSidePadding! -
+                outSidePadding -
                 childSize.width -
-                position!.right!);
+                right);
       } else {
         leftMostXtoTarget = max(
-            outSidePadding!,
+            outSidePadding,
             min(
-                targetCenter!.dx - childSize.width / 2,
+                targetCenter.dx - childSize.width / 2,
                 size.topRight(Offset.zero).dx -
-                    outSidePadding! -
+                    outSidePadding -
                     childSize.width));
       }
       return leftMostXtoTarget;
@@ -54,18 +56,18 @@ class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
         topmostYtoTarget = position?.top;
       } else if (position?.bottom != null) {
         topmostYtoTarget = max(
-            size.topLeft(Offset.zero).dy + outSidePadding!,
+            size.topLeft(Offset.zero).dy + outSidePadding,
             size.bottomRight(Offset.zero).dy -
-                outSidePadding! -
+                outSidePadding -
                 childSize.height -
                 position!.bottom!);
       } else {
         topmostYtoTarget = max(
-            outSidePadding!,
+            outSidePadding,
             min(
-                targetCenter!.dy - childSize.height / 2,
+                targetCenter.dy - childSize.height / 2,
                 size.bottomRight(Offset.zero).dy -
-                    outSidePadding! -
+                    outSidePadding -
                     childSize.height));
       }
       return topmostYtoTarget;
@@ -74,19 +76,19 @@ class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
     switch (direction) {
       //
       case TooltipDirection.down:
-        return Offset(calcLeftMostXtoTarget()!, targetCenter!.dy);
+        return Offset(calcLeftMostXtoTarget()!, targetCenter.dy);
 
       case TooltipDirection.up:
-        final top = position?.top ?? targetCenter!.dy - childSize.height;
+        final top = position?.top ?? targetCenter.dy - childSize.height;
         return Offset(calcLeftMostXtoTarget()!, top);
 
       case TooltipDirection.left:
-        final left = position?.left ?? targetCenter!.dx - childSize.width;
+        final left = position?.left ?? targetCenter.dx - childSize.width;
         return Offset(left, calcTopMostYtoTarget()!);
 
       case TooltipDirection.right:
         return Offset(
-          targetCenter!.dx,
+          targetCenter.dx,
           calcTopMostYtoTarget()!,
         );
 
@@ -113,13 +115,13 @@ class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
       } else if ((left != null && right == null) ||
           (left == null && right != null)) {
         // make sure that the sum of left, right + maxwidth isn't bigger than the screen width.
-        final sideDelta = (left ?? 0.0) + (right ?? 0.0) + outSidePadding!;
+        final sideDelta = (left ?? 0.0) + (right ?? 0.0) + outSidePadding;
         if (calcMaxWidth > constraints.maxWidth - sideDelta) {
           calcMaxWidth = constraints.maxWidth - sideDelta;
         }
       } else {
-        if (calcMaxWidth > constraints.maxWidth - 2 * outSidePadding!) {
-          calcMaxWidth = constraints.maxWidth - 2 * outSidePadding!;
+        if (calcMaxWidth > constraints.maxWidth - 2 * outSidePadding) {
+          calcMaxWidth = constraints.maxWidth - 2 * outSidePadding;
         }
       }
     }
@@ -132,15 +134,14 @@ class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
       } else if ((top != null && bottom == null) ||
           (top == null && bottom != null)) {
         // make sure that the sum of top, bottom + maxHeight isn't bigger than the screen Height.
-        final sideDelta = (position?.top ?? 0.0) +
-            (position?.bottom ?? 0.0) +
-            outSidePadding!;
+        final sideDelta =
+            (position?.top ?? 0.0) + (position?.bottom ?? 0.0) + outSidePadding;
         if (calcMaxHeight > constraints.maxHeight - sideDelta) {
           calcMaxHeight = constraints.maxHeight - sideDelta;
         }
       } else {
-        if (calcMaxHeight > constraints.maxHeight - 2 * outSidePadding!) {
-          calcMaxHeight = constraints.maxHeight - 2 * outSidePadding!;
+        if (calcMaxHeight > constraints.maxHeight - 2 * outSidePadding) {
+          calcMaxHeight = constraints.maxHeight - 2 * outSidePadding;
         }
       }
     }
@@ -153,12 +154,12 @@ class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
 
         if (bottom != null) {
           calcMinHeight =
-              calcMaxHeight = constraints.maxHeight - bottom - targetCenter!.dy;
+              calcMaxHeight = constraints.maxHeight - bottom - targetCenter.dy;
         } else {
           calcMaxHeight = min(
                   (tipConstraints?.maxHeight ?? constraints.maxHeight),
-                  constraints.maxHeight - targetCenter!.dy) -
-              outSidePadding!;
+                  constraints.maxHeight - targetCenter.dy) -
+              outSidePadding;
         }
         break;
 
@@ -167,12 +168,12 @@ class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
         final top = position?.top;
 
         if (top != null) {
-          calcMinHeight = calcMaxHeight = targetCenter!.dy - top;
+          calcMinHeight = calcMaxHeight = targetCenter.dy - top;
         } else {
           calcMaxHeight = min(
                   (tipConstraints?.maxHeight ?? constraints.maxHeight),
-                  targetCenter!.dy) -
-              outSidePadding!;
+                  targetCenter.dy) -
+              outSidePadding;
         }
         break;
 
@@ -181,11 +182,11 @@ class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
         final right = position?.right;
         if (right != null) {
           calcMinWidth =
-              calcMaxWidth = constraints.maxWidth - right - targetCenter!.dx;
+              calcMaxWidth = constraints.maxWidth - right - targetCenter.dx;
         } else {
           calcMaxWidth = min((tipConstraints?.maxWidth ?? constraints.maxWidth),
-                  constraints.maxWidth - targetCenter!.dx) -
-              outSidePadding!;
+                  constraints.maxWidth - targetCenter.dx) -
+              outSidePadding;
         }
         break;
 
@@ -193,11 +194,11 @@ class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
         calcMinMaxHeight();
         final left = position?.left;
         if (left != null) {
-          calcMinWidth = calcMaxWidth = targetCenter!.dx - left;
+          calcMinWidth = calcMaxWidth = targetCenter.dx - left;
         } else {
           calcMaxWidth = min((tipConstraints?.maxWidth ?? constraints.maxWidth),
-                  targetCenter!.dx) -
-              outSidePadding!;
+                  targetCenter.dx) -
+              outSidePadding;
         }
         break;
 
