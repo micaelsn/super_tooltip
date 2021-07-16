@@ -12,7 +12,6 @@ typedef OnCloseCallback = void Function();
 class SuperTooltip {
   SuperTooltip({
     required this.content, // The contents of the tooltip.
-    required this.popupDirection,
     this.onClose,
     this.constraints,
     TipPosition? tipPosition,
@@ -38,10 +37,6 @@ class SuperTooltip {
   ///
   /// The content of the Tooltip
   final Widget content;
-
-  ///
-  /// The direcion in which the tooltip should open
-  TooltipDirection popupDirection;
 
   ///
   /// optional handler that gets called when the Tooltip is closed
