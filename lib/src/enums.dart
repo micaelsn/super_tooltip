@@ -20,13 +20,7 @@ enum ClipAreaShape {
   rectangle,
 }
 
-enum SuperTooltipDismissBehaviour {
-  none,
-  onTap,
-  onPointerDown,
-}
-
-enum Snap {
+enum SnapAxis {
   ///
   /// If [vertical], the bigger free space above or below the target will be
   /// covered completely by the ToolTip
