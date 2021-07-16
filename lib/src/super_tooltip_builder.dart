@@ -129,7 +129,7 @@ class _SuperTooltip extends StatelessWidget {
   final Size? targetSize;
   final OnCloseCallback close;
 
-  EdgeInsets _getBalloonContainerMargin() {
+  EdgeInsets _getBalloonContainerMargin(TipDirection tipDirection) {
     var top = 0.0;
 
     if (tooltip.closeButtonPosition?.isOutside ?? false)
@@ -137,11 +137,9 @@ class _SuperTooltip extends StatelessWidget {
 
     final distanceAway = tooltip.pointerDecoration.distanceAway;
 
-    switch (tooltip.tipPosition.direction) {
+    switch (tipDirection) {
       case TipDirection.down:
-        return EdgeInsets.only(
-          top: distanceAway,
-        );
+        return EdgeInsets.only(top: distanceAway);
 
       case TipDirection.up:
         return EdgeInsets.only(bottom: distanceAway, top: top);
@@ -153,7 +151,9 @@ class _SuperTooltip extends StatelessWidget {
         return EdgeInsets.only(left: distanceAway, top: top);
 
       default:
-        return EdgeInsets.zero;
+        throw AssertionError(
+            'Unsupported TipDirection ${tooltip.tipPosition.direction}');
+      // return EdgeInsets.zero;
     }
   }
 
@@ -163,7 +163,7 @@ class _SuperTooltip extends StatelessWidget {
         _right = tooltip.tipPosition.right,
         _top = tooltip.tipPosition.top,
         _bottom = tooltip.tipPosition.bottom;
-    var _popupDirection = tooltip.tipPosition.direction ?? TipDirection.down;
+    var _popupDirection = tooltip.tipPosition.direction;
 
     /// Handling snap far away feature.
     if (tooltip.tipPosition.snapsVertical) {
@@ -220,28 +220,31 @@ class _SuperTooltip extends StatelessWidget {
             child: Stack(
               fit: StackFit.passthrough,
               children: [
-                Container(
-                    margin: _getBalloonContainerMargin(),
-                    clipBehavior: Clip.hardEdge,
-                    decoration: ShapeDecoration(
-                        color: tooltip.contentBackgroundColor ?? Colors.white,
-                        shadows: tooltip.boxShadow,
-                        shape: BubbleShape(
-                          direction: _popupDirection,
-                          targetCenter: targetCenter,
-                          borderDecoration: tooltip.borderDecoration,
-                          pointerDecoration: tooltip.pointerDecoration,
-                          position: TipPosition.fromLTRB(
-                            _left,
-                            _top,
-                            _right,
-                            _bottom,
-                          ),
-                        )),
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: tooltip.content,
-                    )),
+                Positioned.fill(
+                  child: Container(
+                      margin: _getBalloonContainerMargin(_popupDirection),
+                      clipBehavior: Clip.hardEdge,
+                      decoration: ShapeDecoration(
+                          color: tooltip.contentBackgroundColor,
+                          shadows: tooltip.boxShadow,
+                          shape: BubbleShape(
+                            backgroundColor: tooltip.contentBackgroundColor,
+                            direction: _popupDirection,
+                            targetCenter: targetCenter,
+                            borderDecoration: tooltip.borderDecoration,
+                            pointerDecoration: tooltip.pointerDecoration,
+                            position: TipPosition.fromLTRB(
+                              _left,
+                              _top,
+                              _right,
+                              _bottom,
+                            ),
+                          )),
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: tooltip.content,
+                      )),
+                ),
                 Builder(
                   builder: (context) {
                     final closePosition = tooltip.closeButtonPosition;
