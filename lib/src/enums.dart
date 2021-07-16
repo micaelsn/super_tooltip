@@ -1,4 +1,4 @@
-enum TooltipDirection {
+enum TipDirection {
   up,
   down,
   left,
@@ -26,7 +26,7 @@ enum SuperTooltipDismissBehaviour {
   onPointerDown,
 }
 
-enum SnapToSpace {
+enum Snap {
   ///
   /// If [vertical], the bigger free space above or below the target will be
   /// covered completely by the ToolTip
