@@ -51,20 +51,15 @@ class _TargetWidgetState extends State<TargetWidget> {
         popupDirection: TooltipDirection.up,
         pointerDecoration: const PointerDecoration(
           minDistance: 15,
-          baseWidth: 100,
+          baseWidth: 40,
           height: 40,
         ),
+        closeButtonPosition: CloseButtonPosition.inside,
         borderDecoration: const BorderDecoration(
           color: Colors.green,
           width: 5,
         ),
         tipPosition: TipPosition.snapTo(SnapToSpace.vertical),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black,
-            blurRadius: 3,
-          )
-        ],
         background: TipBackground(
             touchThrough: TouchThrough.rect(
           area: const Rect.fromLTWH(
