@@ -11,15 +11,15 @@ import 'models/pointer_decoration.model.dart';
 class BubbleShape extends ShapeBorder {
   BubbleShape({
     required this.direction,
+    required this.targetCenter,
     PointerDecoration? pointerDecoration,
     BorderDecoration? borderDecoration,
-    this.targetCenter,
     this.position,
   })  : _borderDecoration = borderDecoration ?? const BorderDecoration(),
         _pointerDecoration = pointerDecoration ?? const PointerDecoration();
 
   final TooltipDirection direction;
-  final Offset? targetCenter;
+  final Offset targetCenter;
   final PointerDecoration _pointerDecoration;
   final BorderDecoration _borderDecoration;
   final TipPosition? position;
@@ -78,27 +78,25 @@ class BubbleShape extends ShapeBorder {
         : _borderDecoration.radius;
 
     switch (direction) {
-      //
-
       case TooltipDirection.down:
         return _getBottomRightPath(rect)
           ..lineTo(
               min(
                   max(
-                      targetCenter!.dx + _pointerDecoration.baseWidth / 2,
+                      targetCenter.dx + _pointerDecoration.baseWidth / 2,
                       rect.left +
                           _borderDecoration.radius +
                           _pointerDecoration.baseWidth),
                   rect.right - topRightRadius),
               rect.top)
           ..lineTo(
-              targetCenter!.dx,
-              targetCenter!.dy +
+              targetCenter.dx,
+              targetCenter.dy +
                   _pointerDecoration.height) // up to arrow tip   \
           ..lineTo(
               max(
                   min(
-                      targetCenter!.dx - _pointerDecoration.baseWidth / 2,
+                      targetCenter.dx - _pointerDecoration.baseWidth / 2,
                       rect.right -
                           topLeftRadius -
                           _pointerDecoration.baseWidth),
@@ -120,7 +118,7 @@ class BubbleShape extends ShapeBorder {
           ..lineTo(
               min(
                   max(
-                      targetCenter!.dx + _pointerDecoration.baseWidth / 2,
+                      targetCenter.dx + _pointerDecoration.baseWidth / 2,
                       rect.left +
                           bottomLeftRadius +
                           _pointerDecoration.baseWidth),
@@ -128,14 +126,13 @@ class BubbleShape extends ShapeBorder {
               rect.bottom)
 
           // up to arrow tip   \
-          ..lineTo(
-              targetCenter!.dx, targetCenter!.dy - _pointerDecoration.height)
+          ..lineTo(targetCenter.dx, targetCenter.dy - _pointerDecoration.height)
 
           //  down /
           ..lineTo(
               max(
                   min(
-                      targetCenter!.dx - _pointerDecoration.baseWidth / 2,
+                      targetCenter.dx - _pointerDecoration.baseWidth / 2,
                       rect.right -
                           bottomRightRadius -
                           _pointerDecoration.baseWidth),
@@ -154,17 +151,17 @@ class BubbleShape extends ShapeBorder {
               rect.right,
               max(
                   min(
-                      targetCenter!.dy - _pointerDecoration.baseWidth / 2,
+                      targetCenter.dy - _pointerDecoration.baseWidth / 2,
                       rect.bottom -
                           bottomRightRadius -
                           _pointerDecoration.baseWidth),
                   rect.top + topRightRadius))
-          ..lineTo(targetCenter!.dx - _pointerDecoration.height,
-              targetCenter!.dy) // right to arrow tip   \
+          ..lineTo(targetCenter.dx - _pointerDecoration.height,
+              targetCenter.dy) // right to arrow tip   \
           //  left /
           ..lineTo(
               rect.right,
-              min(targetCenter!.dy + _pointerDecoration.baseWidth / 2,
+              min(targetCenter.dy + _pointerDecoration.baseWidth / 2,
                   rect.bottom - bottomRightRadius))
           ..lineTo(rect.right, rect.bottom - _borderDecoration.radius)
           ..arcToPoint(Offset(rect.right - bottomRightRadius, rect.bottom),
@@ -182,7 +179,7 @@ class BubbleShape extends ShapeBorder {
               rect.left,
               max(
                   min(
-                      targetCenter!.dy - _pointerDecoration.baseWidth / 2,
+                      targetCenter.dy - _pointerDecoration.baseWidth / 2,
                       rect.bottom -
                           bottomLeftRadius -
                           _pointerDecoration.baseWidth),
@@ -190,12 +187,12 @@ class BubbleShape extends ShapeBorder {
 
           //left to arrow tip   /
           ..lineTo(
-              targetCenter!.dx + _pointerDecoration.baseWidth, targetCenter!.dy)
+              targetCenter.dx + _pointerDecoration.baseWidth, targetCenter.dy)
 
           //  right \
           ..lineTo(
               rect.left,
-              min(targetCenter!.dy + _pointerDecoration.baseWidth / 2,
+              min(targetCenter.dy + _pointerDecoration.baseWidth / 2,
                   rect.bottom - bottomLeftRadius))
           ..lineTo(rect.left, rect.bottom - bottomLeftRadius)
           ..arcToPoint(Offset(rect.left + bottomLeftRadius, rect.bottom),
