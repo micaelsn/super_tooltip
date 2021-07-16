@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:super_tooltip/src/models/tip_constraints.model.dart';
 
 import 'animation_wrapper.dart';
 import 'bubble_shape.dart';
@@ -189,21 +190,25 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         child: Center(
           child: CustomSingleChildLayout(
             delegate: PopupBallonLayoutDelegate(
-              popupDirection: _popupDirection,
+              direction: _popupDirection,
               targetCenter: widget.targetCenter,
-              minWidth: widget.tooltip.constraints?.minWidth,
-              maxWidth: widget.tooltip.tipPosition.snapsHorizontal
-                  ? null
-                  : widget.tooltip.constraints?.maxWidth,
-              minHeight: widget.tooltip.constraints?.minHeight,
-              maxHeight: widget.tooltip.tipPosition.snapsVertical
-                  ? null
-                  : widget.tooltip.constraints?.maxHeight,
+              tipConstraints: TipConstraints(
+                minWidth: widget.tooltip.constraints?.minWidth,
+                maxWidth: widget.tooltip.tipPosition.snapsHorizontal
+                    ? null
+                    : widget.tooltip.constraints?.maxWidth,
+                minHeight: widget.tooltip.constraints?.minHeight,
+                maxHeight: widget.tooltip.tipPosition.snapsVertical
+                    ? null
+                    : widget.tooltip.constraints?.maxHeight,
+              ),
               outSidePadding: widget.tooltip.minimumOutSidePadding,
-              top: _top,
-              bottom: _bottom,
-              left: _left,
-              right: _right,
+              position: TipPosition.fromLTRB(
+                _left,
+                _top,
+                _right,
+                _bottom,
+              ),
             ),
             child: Stack(
               fit: StackFit.passthrough,
