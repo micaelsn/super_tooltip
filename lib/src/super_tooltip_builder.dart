@@ -70,11 +70,12 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
         ancestor: overlayRenderBox);
 
     // Create the background below the popup including the clipArea.
-    if (widget.tooltip.background.containsOverlay) {
+    final background = widget.tooltip.background;
+    if (background != null) {
       _backgroundOverlay = OverlayEntry(
         builder: (context) => SuperTooltipBackground(
           targetCenter: _targetCenter,
-          background: widget.tooltip.background,
+          background: background,
           close: _close,
         ),
       );
@@ -129,29 +130,30 @@ class _SuperTooltip extends StatelessWidget {
   final OnCloseCallback close;
 
   EdgeInsets _getBalloonContainerMargin() {
-    final top = (tooltip.closeButtonPosition?.isOutside ?? false)
-        ? (tooltip.closeWidget.preferredSize.height) + 5
-        : 0.0;
+    var top = 0.0;
+
+    if (tooltip.closeButtonPosition?.isOutside ?? false)
+      top = tooltip.closeWidget.preferredSize.height + 5;
 
     final distanceAway = tooltip.pointerDecoration.distanceAway;
 
     switch (tooltip.tipPosition.direction) {
-      case TooltipDirection.down:
+      case TipDirection.down:
         return EdgeInsets.only(
           top: distanceAway,
         );
 
-      case TooltipDirection.up:
+      case TipDirection.up:
         return EdgeInsets.only(bottom: distanceAway, top: top);
 
-      case TooltipDirection.left:
+      case TipDirection.left:
         return EdgeInsets.only(right: distanceAway, top: top);
 
-      case TooltipDirection.right:
+      case TipDirection.right:
         return EdgeInsets.only(left: distanceAway, top: top);
 
       default:
-        throw AssertionError(tooltip.tipPosition.direction);
+        return EdgeInsets.zero;
     }
   }
 
@@ -161,17 +163,17 @@ class _SuperTooltip extends StatelessWidget {
         _right = tooltip.tipPosition.right,
         _top = tooltip.tipPosition.top,
         _bottom = tooltip.tipPosition.bottom;
-    var _popupDirection = tooltip.tipPosition.direction;
+    var _popupDirection = tooltip.tipPosition.direction ?? TipDirection.down;
 
     /// Handling snap far away feature.
     if (tooltip.tipPosition.snapsVertical) {
       _left = 0.0;
       _right = 0.0;
       if ((targetCenter.dy) > (targetSize?.center(Offset.zero).dy ?? 0)) {
-        _popupDirection = TooltipDirection.up;
+        _popupDirection = TipDirection.up;
         _top = 0.0;
       } else {
-        _popupDirection = TooltipDirection.down;
+        _popupDirection = TipDirection.down;
         _bottom = 0.0;
       }
     }
@@ -180,10 +182,10 @@ class _SuperTooltip extends StatelessWidget {
       _top = 0.0;
       _bottom = 0.0;
       if (targetCenter.dx < (targetSize?.center(Offset.zero).dx ?? 0)) {
-        _popupDirection = TooltipDirection.right;
+        _popupDirection = TipDirection.right;
         _right = 0.0;
       } else {
-        _popupDirection = TooltipDirection.left;
+        _popupDirection = TipDirection.left;
         _left = 0.0;
       }
     }
@@ -195,7 +197,7 @@ class _SuperTooltip extends StatelessWidget {
         child: Center(
           child: CustomSingleChildLayout(
             delegate: PopupBalloonLayoutDelegate(
-              direction: _popupDirection ?? TooltipDirection.down,
+              direction: _popupDirection,
               targetCenter: targetCenter,
               tipConstraints: TipConstraints(
                 minWidth: tooltip.constraints?.minWidth,
@@ -207,7 +209,7 @@ class _SuperTooltip extends StatelessWidget {
                     ? null
                     : tooltip.constraints?.maxHeight,
               ),
-              outSidePadding: tooltip.minimumOutSidePadding,
+              margin: tooltip.margin,
               position: TipPosition.fromLTRB(
                 _left,
                 _top,
@@ -219,32 +221,33 @@ class _SuperTooltip extends StatelessWidget {
               fit: StackFit.passthrough,
               children: [
                 Container(
-                  margin: _getBalloonContainerMargin(),
-                  clipBehavior: Clip.hardEdge,
-                  decoration: ShapeDecoration(
-                      color: tooltip.background.color,
-                      shadows: tooltip.boxShadow,
-                      shape: BubbleShape(
-                        direction: tooltip.tipPosition.direction ??
-                            TooltipDirection.down,
-                        targetCenter: targetCenter,
-                        borderDecoration: tooltip.borderDecoration,
-                        pointerDecoration: tooltip.pointerDecoration,
-                        position: TipPosition.fromLTRB(
-                          _left,
-                          _top,
-                          _right,
-                          _bottom,
-                        ),
-                      )),
-                  child: tooltip.content,
-                ),
+                    margin: _getBalloonContainerMargin(),
+                    clipBehavior: Clip.hardEdge,
+                    decoration: ShapeDecoration(
+                        color: tooltip.contentBackgroundColor ?? Colors.white,
+                        shadows: tooltip.boxShadow,
+                        shape: BubbleShape(
+                          direction: tooltip.tipPosition.direction ??
+                              TipDirection.down,
+                          targetCenter: targetCenter,
+                          borderDecoration: tooltip.borderDecoration,
+                          pointerDecoration: tooltip.pointerDecoration,
+                          position: TipPosition.fromLTRB(
+                            _left,
+                            _top,
+                            _right,
+                            _bottom,
+                          ),
+                        )),
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: tooltip.content,
+                    )),
                 Builder(
                   builder: (context) {
-                    const internalClickAreaPadding = 2.0;
                     final closePosition = tooltip.closeButtonPosition;
                     final direction =
-                        tooltip.tipPosition.direction ?? TooltipDirection.down;
+                        tooltip.tipPosition.direction ?? TipDirection.down;
 
                     if (closePosition == null) {
                       return const SizedBox();
@@ -256,7 +259,7 @@ class _SuperTooltip extends StatelessWidget {
                     switch (direction) {
                       //
                       // LEFT: -------------------------------------
-                      case TooltipDirection.left:
+                      case TipDirection.left:
                         right = tooltip.pointerDecoration.distanceAway + 3.0;
                         if (closePosition.isInside) {
                           top = 2.0;
@@ -267,8 +270,8 @@ class _SuperTooltip extends StatelessWidget {
                         break;
 
                       // RIGHT/UP: ---------------------------------
-                      case TooltipDirection.right:
-                      case TooltipDirection.up:
+                      case TipDirection.right:
+                      case TipDirection.up:
                         right = 5.0;
                         if (closePosition.isInside) {
                           top = 2.0;
@@ -279,7 +282,7 @@ class _SuperTooltip extends StatelessWidget {
                         break;
 
                       // DOWN: -------------------------------------
-                      case TooltipDirection.down:
+                      case TipDirection.down:
                         // If this value gets negative the Shadow gets clipped. The problem occurs is arrowlength + arrowTipDistance
                         // is smaller than _outSideCloseButtonPadding which would mean arrowLength would need to be increased if the button is ouside.
                         right = 2.0;
@@ -293,25 +296,16 @@ class _SuperTooltip extends StatelessWidget {
                     }
 
                     return Positioned(
-                        right: right,
-                        top: top,
-                        child: GestureDetector(
-                          onTap: close,
-                          child: Material(
-                            color: Colors.transparent,
-                            child: Padding(
-                              padding: const EdgeInsets.all(
-                                  internalClickAreaPadding),
-                              child: GestureDetector(
-                                onTap: close,
-                                child: AbsorbPointer(
-                                  absorbing: true,
-                                  child: tooltip.closeWidget,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ));
+                      right: right,
+                      top: top,
+                      child: GestureDetector(
+                        onTap: close,
+                        child: AbsorbPointer(
+                          absorbing: true,
+                          child: tooltip.closeWidget,
+                        ),
+                      ),
+                    );
                   },
                 ),
               ],
