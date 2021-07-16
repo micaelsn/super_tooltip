@@ -48,7 +48,7 @@ class _TargetWidgetState extends State<TargetWidget> {
     return SuperTooltipBuilder(
       key: const Key('tooltip'),
       tooltip: SuperTooltip(
-        popupDirection: TooltipDirection.up,
+        popupDirection: TooltipDirection.down,
         pointerDecoration: const PointerDecoration(
           minDistance: 15,
           baseWidth: 40,
