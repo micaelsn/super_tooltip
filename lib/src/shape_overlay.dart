@@ -40,28 +40,26 @@ class ShapeOverlay extends ShapeBorder {
 
   Path? getExclusion() {
     Path exclusion;
-    if (clipRect == null) {
+
+    final _rect = clipRect;
+    if (_rect == null) {
       return null;
     } else if (clipAreaShape == ClipAreaShape.oval) {
-      exclusion = Path()..addOval(clipRect!);
+      exclusion = Path()..addOval(_rect);
     } else {
       exclusion = Path()
-        ..moveTo(clipRect!.left + clipAreaCornerRadius, clipRect!.top)
-        ..lineTo(clipRect!.right - clipAreaCornerRadius, clipRect!.top)
-        ..arcToPoint(
-            Offset(clipRect!.right, clipRect!.top + clipAreaCornerRadius),
+        ..moveTo(_rect.left + clipAreaCornerRadius, _rect.top)
+        ..lineTo(_rect.right - clipAreaCornerRadius, _rect.top)
+        ..arcToPoint(Offset(_rect.right, _rect.top + clipAreaCornerRadius),
             radius: Radius.circular(clipAreaCornerRadius))
-        ..lineTo(clipRect!.right, clipRect!.bottom - clipAreaCornerRadius)
-        ..arcToPoint(
-            Offset(clipRect!.right - clipAreaCornerRadius, clipRect!.bottom),
+        ..lineTo(_rect.right, _rect.bottom - clipAreaCornerRadius)
+        ..arcToPoint(Offset(_rect.right - clipAreaCornerRadius, _rect.bottom),
             radius: Radius.circular(clipAreaCornerRadius))
-        ..lineTo(clipRect!.left + clipAreaCornerRadius, clipRect!.bottom)
-        ..arcToPoint(
-            Offset(clipRect!.left, clipRect!.bottom - clipAreaCornerRadius),
+        ..lineTo(_rect.left + clipAreaCornerRadius, _rect.bottom)
+        ..arcToPoint(Offset(_rect.left, _rect.bottom - clipAreaCornerRadius),
             radius: Radius.circular(clipAreaCornerRadius))
-        ..lineTo(clipRect!.left, clipRect!.top + clipAreaCornerRadius)
-        ..arcToPoint(
-            Offset(clipRect!.left + clipAreaCornerRadius, clipRect!.top),
+        ..lineTo(_rect.left, _rect.top + clipAreaCornerRadius)
+        ..arcToPoint(Offset(_rect.left + clipAreaCornerRadius, _rect.top),
             radius: Radius.circular(clipAreaCornerRadius))
         ..close();
     }
