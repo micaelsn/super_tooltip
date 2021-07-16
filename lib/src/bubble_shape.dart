@@ -92,7 +92,7 @@ class BubbleShape extends ShapeBorder {
           ..lineTo(
               targetCenter.dx,
               targetCenter.dy +
-                  _pointerDecoration.height) // up to arrow tip   \
+                  _pointerDecoration.minDistance) // up to arrow tip   \
           ..lineTo(
               max(
                   min(
