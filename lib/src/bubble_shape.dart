@@ -106,7 +106,15 @@ class BubbleShape extends ShapeBorder {
                   rect.right - topRightRadius),
               rect.top)
           // draw to arrow tip
-          ..lineTo(targetCenter.dx, targetCenter.dy + _pointerDecoration.height)
+          ..lineTo(targetCenter.dx + _pointerDecoration.tipRadius,
+              targetCenter.dy + _pointerDecoration.distanceFromCenter)
+          // add to arrow tip radius
+          ..arcToPoint(
+            Offset(targetCenter.dx - _pointerDecoration.tipRadius,
+                targetCenter.dy + _pointerDecoration.distanceFromCenter),
+            clockwise: false,
+            radius: Radius.circular(_pointerDecoration.tipRadius * 1.5),
+          )
           // draw to the left of the arrow
           ..lineTo(
               max(
@@ -147,8 +155,15 @@ class BubbleShape extends ShapeBorder {
                   rect.right - bottomRightRadius),
               rect.bottom)
           // draw to arrow tip
-          ..lineTo(targetCenter.dx,
+          ..lineTo(targetCenter.dx + _pointerDecoration.tipRadius,
               targetCenter.dy - _pointerDecoration.distanceFromCenter)
+          // add to arrow tip radius
+          ..arcToPoint(
+            Offset(targetCenter.dx - _pointerDecoration.tipRadius,
+                targetCenter.dy - _pointerDecoration.distanceFromCenter),
+            clockwise: true,
+            radius: Radius.circular(_pointerDecoration.tipRadius * 1.5),
+          )
           // draw to the left of the arrow
           ..lineTo(
               max(
@@ -185,7 +200,14 @@ class BubbleShape extends ShapeBorder {
                   rect.top + topRightRadius))
           // draw to arrow tip
           ..lineTo(targetCenter.dx - _pointerDecoration.distanceFromCenter,
-              targetCenter.dy)
+              targetCenter.dy - _pointerDecoration.tipRadius)
+          // add to arrow tip radius
+          ..arcToPoint(
+            Offset(targetCenter.dx - _pointerDecoration.distanceFromCenter,
+                targetCenter.dy + _pointerDecoration.tipRadius),
+            clockwise: true,
+            radius: Radius.circular(_pointerDecoration.tipRadius * 1.5),
+          )
           // draw to the end of the arrow
           ..lineTo(
               rect.right,
@@ -221,10 +243,16 @@ class BubbleShape extends ShapeBorder {
                           _pointerDecoration.baseWidth),
                   rect.top + topLeftRadius))
 
-          // draw to start of arrow
-          ..lineTo(
-              targetCenter.dx + _pointerDecoration.baseWidth, targetCenter.dy)
-
+          // draw to arrow tip
+          ..lineTo(targetCenter.dx + _pointerDecoration.distanceFromCenter,
+              targetCenter.dy - _pointerDecoration.tipRadius)
+          // add to arrow tip radius
+          ..arcToPoint(
+            Offset(targetCenter.dx + _pointerDecoration.distanceFromCenter,
+                targetCenter.dy + _pointerDecoration.tipRadius),
+            clockwise: false,
+            radius: Radius.circular(_pointerDecoration.tipRadius * 1.5),
+          )
           //  draw to end of arrow
           ..lineTo(
               rect.left,
