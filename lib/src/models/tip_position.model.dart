@@ -6,7 +6,7 @@ class TipPosition {
     this.top,
     this.right,
     this.bottom,
-    this.snapTo = SnapToSpace.none,
+    this.snapTo = Snap.none,
     this.direction,
   });
 
@@ -38,53 +38,45 @@ class TipPosition {
     );
   }
 
-  factory TipPosition.snapTo(SnapToSpace position) {
+  factory TipPosition.snap(Snap position) {
     return TipPosition._(
       snapTo: position,
     );
   }
 
-  static TipPosition get leftSide {
-    return const TipPosition._(
-      direction: TooltipDirection.left,
-    );
-  }
-
-  static TipPosition get rightSide {
-    return const TipPosition._(
-      direction: TooltipDirection.right,
-    );
-  }
-
-  static TipPosition get topSide {
-    return const TipPosition._(
-      direction: TooltipDirection.up,
-    );
-  }
-
-  static TipPosition get bottomSide {
-    return const TipPosition._(
-      direction: TooltipDirection.down,
-    );
+  factory TipPosition.side(TipDirection direction) {
+    return TipPosition._(direction: direction);
   }
 
   final double? top;
   final double? left;
   final double? bottom;
   final double? right;
-  final SnapToSpace snapTo;
+  final Snap snapTo;
 
   ///
   /// The direcion in which the tooltip should open
-  final TooltipDirection? direction;
+  final TipDirection? direction;
+
+  bool get isRightSide => right == 0;
+  bool get isLeftSide => left == 0;
+  bool get isTopSide => top == 0;
+  bool get isBottomSide => bottom == 0;
 
   ///
   /// If [snapsHorizontal] == true the bigger free space left or right of the target will be
   /// covered completely by the ToolTip.
-  bool get snapsHorizontal => snapTo == SnapToSpace.horizontal;
+  bool get snapsHorizontal =>
+      snapTo == Snap.horizontal || (left == 0 && right == 0);
 
   ///
   /// If [snapsVertical] == true the bigger free space above or below the target will be
   /// covered completely by the ToolTip.
-  bool get snapsVertical => snapTo == SnapToSpace.vertical;
+  bool get snapsVertical =>
+      snapTo == Snap.vertical || (top == 0 && bottom == 0);
+
+  bool get hasBottomLeftRadius => left == 0 || bottom == 0;
+  bool get hasBottomRightRadius => right == 0 || bottom == 0;
+  bool get hasTopLeftRadius => left == 0 || top == 0;
+  bool get hasTopRightRadius => right == 0 || top == 0;
 }
