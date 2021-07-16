@@ -10,6 +10,11 @@ enum CloseButtonPosition {
   outside,
 }
 
+extension CloseButtonPositionExtension on CloseButtonPosition {
+  bool get isInside => this == CloseButtonPosition.inside;
+  bool get isOutside => this == CloseButtonPosition.outside;
+}
+
 enum ClipAreaShape {
   oval,
   rectangle,
