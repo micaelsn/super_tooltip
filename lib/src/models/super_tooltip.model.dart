@@ -45,7 +45,7 @@ class SuperTooltip {
   ///
   /// [constraints] optional size constraints.
   /// If a constraint is not set the size will ajust to the content
-  final BoxConstraints? constraints;
+  final TipConstraints? constraints;
 
   ///
   /// The minium padding from the Tooltip to the screen limits
