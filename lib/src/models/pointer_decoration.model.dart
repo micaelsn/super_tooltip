@@ -6,16 +6,16 @@ class PointerDecoration {
 
     ///
     /// The height of the pointer
-    this.height = 20,
+    this.distanceFromCenter = 20,
 
     ///
     /// The distance of the tip of the arrow's tip to the center of the target
-    this.distanceFromCenter = 2,
+    this.height = 2,
   });
 
   final double baseWidth;
-  final double height;
   final double distanceFromCenter;
+  final double height;
 
-  double get distanceAway => height + distanceFromCenter;
+  double get distanceAway => distanceFromCenter + height;
 }
