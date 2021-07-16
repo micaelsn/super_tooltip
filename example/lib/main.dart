@@ -30,7 +30,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.red,
-      body: Center(child: TargetWidget()),
+      body: Align(
+        alignment: Alignment(0, -.75),
+        child: TargetWidget(),
+      ),
     );
   }
 }
@@ -48,42 +51,47 @@ class _TargetWidgetState extends State<TargetWidget> {
     return SuperTooltipBuilder(
       key: const Key('tooltip'),
       tooltip: SuperTooltip(
-        popupDirection: TooltipDirection.down,
         pointerDecoration: const PointerDecoration(
-          minDistance: 15,
+          distanceFromCenter: 30,
           baseWidth: 40,
           height: 40,
         ),
+        margin: 50,
         closeButtonPosition: CloseButtonPosition.inside,
         borderDecoration: const BorderDecoration(
-          color: Colors.green,
+          color: Colors.red,
           width: 5,
         ),
-        tipPosition: TipPosition.snapTo(SnapToSpace.vertical),
+        tipPosition: TipPosition.snap(Snap.vertical),
+        // tipPosition: TipPosition.side(TipDirection.left),
         background: TipBackground(
-            touchThrough: TouchThrough.rect(
-          area: const Rect.fromLTWH(
-            100,
-            100,
-            200.0,
-            160.0,
+          touchThrough: TouchThrough.oval(
+            area: const Rect.fromLTWH(
+              100,
+              100,
+              200.0,
+              200.0,
+            ),
           ),
-        )),
-        content: const Material(
-            child: Padding(
+        ),
+        content: const Padding(
           padding: EdgeInsets.only(top: 20.0),
           child: Text(
-            'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, '
-            'sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, '
             'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ',
             softWrap: true,
           ),
-        )),
+        ),
+        // closeWidget: const PreferredSize(
+        //   preferredSize: Size(30, 30),
+        //   child: Center(
+        //     child: Icon(Icons.delete),
+        //   ),
+        // )
       ),
       targetBuilder: (context, show) {
         return GestureDetector(
           onTap: () {
-            show(context);
+            show();
           },
           child: Container(
             width: 100.0,
