@@ -227,8 +227,7 @@ class _SuperTooltip extends StatelessWidget {
                         color: tooltip.contentBackgroundColor ?? Colors.white,
                         shadows: tooltip.boxShadow,
                         shape: BubbleShape(
-                          direction: tooltip.tipPosition.direction ??
-                              TipDirection.down,
+                          direction: _popupDirection,
                           targetCenter: targetCenter,
                           borderDecoration: tooltip.borderDecoration,
                           pointerDecoration: tooltip.pointerDecoration,
@@ -246,8 +245,6 @@ class _SuperTooltip extends StatelessWidget {
                 Builder(
                   builder: (context) {
                     final closePosition = tooltip.closeButtonPosition;
-                    final direction =
-                        tooltip.tipPosition.direction ?? TipDirection.down;
 
                     if (closePosition == null) {
                       return const SizedBox();
@@ -256,7 +253,7 @@ class _SuperTooltip extends StatelessWidget {
                     double? right;
                     double? top;
 
-                    switch (direction) {
+                    switch (_popupDirection) {
                       //
                       // LEFT: -------------------------------------
                       case TipDirection.left:
