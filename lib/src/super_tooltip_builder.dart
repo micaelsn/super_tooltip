@@ -128,7 +128,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
     final distanceAway = widget.tooltip.pointerDecoration.distanceAway;
 
-    switch (widget.tooltip.popupDirection) {
+    switch (widget.tooltip.tipPosition.direction) {
       case TooltipDirection.down:
         return EdgeInsets.only(
           top: distanceAway,
@@ -144,7 +144,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         return EdgeInsets.only(left: distanceAway, top: top);
 
       default:
-        throw AssertionError(widget.tooltip.popupDirection);
+        throw AssertionError(widget.tooltip.tipPosition.direction);
     }
   }
 
@@ -154,7 +154,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         _right = widget.tooltip.tipPosition.right,
         _top = widget.tooltip.tipPosition.top,
         _bottom = widget.tooltip.tipPosition.bottom;
-    var _popupDirection = widget.tooltip.popupDirection;
+    var _popupDirection = widget.tooltip.tipPosition.direction;
 
     /// Handling snap far away feature.
     if (widget.tooltip.tipPosition.snapsVertical) {
@@ -190,7 +190,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         child: Center(
           child: CustomSingleChildLayout(
             delegate: PopupBalloonLayoutDelegate(
-              direction: _popupDirection,
+              direction: _popupDirection ?? TooltipDirection.down,
               targetCenter: widget.targetCenter,
               tipConstraints: TipConstraints(
                 minWidth: widget.tooltip.constraints?.minWidth,
@@ -221,7 +221,8 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                           color: widget.tooltip.background.color,
                           shadows: widget.tooltip.boxShadow,
                           shape: BubbleShape(
-                            direction: widget.tooltip.popupDirection,
+                            direction: widget.tooltip.tipPosition.direction ??
+                                TooltipDirection.down,
                             targetCenter: widget.targetCenter,
                             borderDecoration: widget.tooltip.borderDecoration,
                             pointerDecoration: widget.tooltip.pointerDecoration,
@@ -240,6 +241,8 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                   builder: (context) {
                     const internalClickAreaPadding = 2.0;
                     final closePosition = widget.tooltip.closeButtonPosition;
+                    final direction = widget.tooltip.tipPosition.direction ??
+                        TooltipDirection.down;
 
                     if (closePosition == null) {
                       return const SizedBox();
@@ -248,7 +251,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                     double? right;
                     double? top;
 
-                    switch (widget.tooltip.popupDirection) {
+                    switch (direction) {
                       //
                       // LEFT: -------------------------------------
                       case TooltipDirection.left:
