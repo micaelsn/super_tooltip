@@ -62,8 +62,7 @@ class _TargetWidgetState extends State<TargetWidget> {
           color: Colors.black,
           width: 1,
         ),
-        constraints: const TipConstraints(maxHeight: 250),
-        tipPosition: TipPosition.side(TipDirection.right),
+        tipPosition: TipPosition.snap(SnapAxis.vertical),
         background: TipBackground(
           touchThrough: TouchThrough.oval(
             area: const Rect.fromLTWH(
@@ -75,8 +74,7 @@ class _TargetWidgetState extends State<TargetWidget> {
           ),
         ),
         contentBackgroundColor: Colors.pink,
-        content: const Align(
-          alignment: Alignment(0, 0),
+        content: const SafeArea(
           child: Padding(
             padding: EdgeInsets.only(top: 20.0),
             child: Text(
@@ -87,8 +85,10 @@ class _TargetWidgetState extends State<TargetWidget> {
         ),
         closeWidget: const PreferredSize(
           preferredSize: Size(30, 30),
-          child: Center(
-            child: Icon(Icons.delete),
+          child: SafeArea(
+            child: Center(
+              child: Icon(Icons.delete),
+            ),
           ),
         ),
       ),
