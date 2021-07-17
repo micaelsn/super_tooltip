@@ -74,6 +74,7 @@ class TipPosition {
   /// covered completely by the ToolTip.
   bool get snapsVertical =>
       snapTo == SnapAxis.vertical || (top == 0 && bottom == 0);
+  bool get hasSnaps => snapsHorizontal || snapsVertical;
 
   bool get hasBottomLeftRadius => left == 0 || bottom == 0;
   bool get hasBottomRightRadius => right == 0 || bottom == 0;
