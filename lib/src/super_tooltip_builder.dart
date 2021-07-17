@@ -252,7 +252,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
     return AnimatedOpacity(
       opacity: opacity,
-      duration: _animatedDuration,
+      duration: widget.tooltip.animationDuration,
       curve: Curves.easeInOut,
       child: Center(
         child: Stack(
