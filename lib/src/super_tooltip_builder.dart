@@ -10,10 +10,14 @@ import 'pop_up_balloon_layout_delegate.dart';
 import 'shape_overlay.dart';
 
 typedef TargetBuilder = Widget Function(BuildContext, ShowHandler);
-typedef ShowHandler = void Function({OverlayState? overlay});
+
+/// provide the key if you wish to override the default widget context
+typedef ShowHandler = void Function({
+  OverlayState? overlay,
+  GlobalKey? key,
+});
 
 var _isOpen = false;
-const _animationDuration = Duration(milliseconds: 600);
 
 class SuperTooltipBuilder extends StatefulWidget {
   SuperTooltipBuilder({
@@ -57,14 +61,24 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
     );
   }
 
-  void _show(BuildContext targetContext, {OverlayState? overlay}) async {
+  void _show(
+    BuildContext targetContext, {
+    OverlayState? overlay,
+    GlobalKey? key,
+  }) async {
+    if (key != null)
+      assert(key.currentWidget != null, 'The key must be assigned to a widget');
     if (_isOpen) {
       _close();
       _isOpen = false;
       return;
     }
-    final renderBox = targetContext.findRenderObject() as RenderBox;
-    final _overlay = overlay ??= Overlay.of(targetContext);
+    var _context = targetContext;
+    if (key != null && key.currentContext != null)
+      _context = key.currentContext!;
+
+    final renderBox = _context.findRenderObject() as RenderBox;
+    final _overlay = overlay ??= Overlay.of(_context);
     final overlayRenderBox = _overlay!.context.findRenderObject() as RenderBox?;
 
     final _targetCenter = renderBox.localToGlobal(
@@ -98,7 +112,7 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
       },
       child: widget.targetBuilder(
         context,
-        ({overlay}) => _show(context, overlay: overlay),
+        ({overlay, key}) => _show(context, overlay: overlay, key: key),
       ),
     );
   }
