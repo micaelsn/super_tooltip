@@ -150,6 +150,13 @@ class __SuperTooltipState extends State<_SuperTooltip> {
     });
   }
 
+  @override
+  void dispose() {
+    // TODO: test dispose method and removing tooltip
+    _close(updateVisibility: false);
+    super.dispose();
+  }
+
   Future<void> _updateVisibility(double newOpacity) async {
     setState(() {
       opacity = newOpacity;
@@ -185,8 +192,8 @@ class __SuperTooltipState extends State<_SuperTooltip> {
     }
   }
 
-  void _close() async {
-    await _updateVisibility(0);
+  void _close({bool updateVisibility = true}) async {
+    if (updateVisibility) await _updateVisibility(0);
     widget.close();
   }
 
