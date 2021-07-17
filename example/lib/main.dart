@@ -28,11 +28,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.red,
-      body: Align(
-        alignment: Alignment(0, .5),
-        child: TargetWidget(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Spacer(),
+          Container(
+            width: 100.0,
+            height: 100.0,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blue,
+            ),
+          ),
+          const Spacer(),
+          const Center(child: TargetWidget()),
+          const Spacer(),
+        ],
       ),
     );
   }
@@ -62,9 +75,9 @@ class _TargetWidgetState extends State<TargetWidget> {
           color: Colors.black,
           width: 1,
         ),
-        tipPosition: TipPosition.snap(SnapAxis.vertical),
+        // tipPosition: TipPosition.side(direction)
         background: TipBackground(
-          touchThrough: TouchThrough.oval(
+          touchThrough: TouchThrough.rect(
             area: const Rect.fromLTWH(
               100,
               100,
@@ -74,13 +87,11 @@ class _TargetWidgetState extends State<TargetWidget> {
           ),
         ),
         contentBackgroundColor: Colors.pink,
-        content: const SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(top: 20.0),
-            child: Text(
-              'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ',
-              softWrap: true,
-            ),
+        content: const Padding(
+          padding: EdgeInsets.all(16),
+          child: Text(
+            'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ',
+            softWrap: true,
           ),
         ),
         closeWidget: const PreferredSize(
