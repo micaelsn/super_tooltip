@@ -211,6 +211,31 @@ class __SuperTooltipState extends State<_SuperTooltip> {
       }
     }
 
+    final content = Container(
+      margin: _getBalloonContainerMargin(_popupDirection),
+      clipBehavior: Clip.hardEdge,
+      decoration: ShapeDecoration(
+          color: widget.tooltip.contentBackgroundColor,
+          shadows: widget.tooltip.boxShadow,
+          shape: BubbleShape(
+            backgroundColor: widget.tooltip.contentBackgroundColor,
+            direction: _popupDirection,
+            targetCenter: widget.targetCenter,
+            borderDecoration: widget.tooltip.borderDecoration,
+            pointerDecoration: widget.tooltip.pointerDecoration,
+            position: TipPosition.fromLTRB(
+              _left,
+              _top,
+              _right,
+              _bottom,
+            ),
+          )),
+      child: Material(
+        type: MaterialType.transparency,
+        child: widget.tooltip.content,
+      ),
+    );
+
     return AnimatedOpacity(
       opacity: opacity,
       duration: _animatedDuration,
@@ -252,34 +277,10 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                 child: Stack(
                   fit: StackFit.passthrough,
                   children: [
-                    Positioned.fill(
-                      child: Container(
-                          margin: _getBalloonContainerMargin(_popupDirection),
-                          clipBehavior: Clip.hardEdge,
-                          decoration: ShapeDecoration(
-                              color: widget.tooltip.contentBackgroundColor,
-                              shadows: widget.tooltip.boxShadow,
-                              shape: BubbleShape(
-                                backgroundColor:
-                                    widget.tooltip.contentBackgroundColor,
-                                direction: _popupDirection,
-                                targetCenter: widget.targetCenter,
-                                borderDecoration:
-                                    widget.tooltip.borderDecoration,
-                                pointerDecoration:
-                                    widget.tooltip.pointerDecoration,
-                                position: TipPosition.fromLTRB(
-                                  _left,
-                                  _top,
-                                  _right,
-                                  _bottom,
-                                ),
-                              )),
-                          child: Material(
-                            type: MaterialType.transparency,
-                            child: widget.tooltip.content,
-                          )),
-                    ),
+                    if (widget.tooltip.tipPosition.hasSnaps)
+                      Positioned.fill(child: content)
+                    else
+                      content,
                     Builder(
                       builder: (context) {
                         final closePosition =
