@@ -267,6 +267,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
       ),
     );
 
+    // TODO: expose the animation to the public
     return AnimatedOpacity(
       opacity: opacity,
       duration: widget.tooltip.animationDuration,
