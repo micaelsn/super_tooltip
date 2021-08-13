@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'touch_through.model.dart';
 
 class TipBackground {
-  TipBackground({
+  const TipBackground({
     this.color = Colors.white,
     this.outsideColor = const Color.fromARGB(50, 255, 255, 255),
     this.dismissible = true,
