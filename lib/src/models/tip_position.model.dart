@@ -1,6 +1,7 @@
 import 'package:super_tooltip/super_tooltip.dart';
 
 class TipPosition {
+  // ignore: unused_element
   const TipPosition._({
     this.left,
     this.top,
@@ -10,43 +11,35 @@ class TipPosition {
     this.direction = TipDirection.down,
   });
 
-  factory TipPosition({
-    double? left,
-    double? top,
-    double? right,
-    double? bottom,
-  }) {
-    return TipPosition._(
-      left: left,
-      top: top,
-      right: right,
-      bottom: bottom,
-    );
-  }
+  const TipPosition({
+    this.left,
+    this.top,
+    this.right,
+    this.bottom,
+  })  : snapTo = SnapAxis.none,
+        direction = TipDirection.down;
 
-  factory TipPosition.fromLTRB(
-    double? left,
-    double? top,
-    double? right,
-    double? bottom,
-  ) {
-    return TipPosition._(
-      left: left,
-      top: top,
-      right: right,
-      bottom: bottom,
-    );
-  }
+  const TipPosition.fromLTRB(
+    this.left,
+    this.top,
+    this.right,
+    this.bottom,
+  )   : snapTo = SnapAxis.none,
+        direction = TipDirection.down;
 
-  factory TipPosition.snap(SnapAxis position) {
-    return TipPosition._(
-      snapTo: position,
-    );
-  }
+  const TipPosition.snap(this.snapTo)
+      : bottom = null,
+        top = null,
+        left = null,
+        right = null,
+        direction = TipDirection.down;
 
-  factory TipPosition.side(TipDirection direction) {
-    return TipPosition._(direction: direction);
-  }
+  const TipPosition.side(this.direction)
+      : bottom = null,
+        top = null,
+        left = null,
+        right = null,
+        snapTo = SnapAxis.none;
 
   final double? top;
   final double? left;
