@@ -66,7 +66,7 @@ class TouchThrough {
         ),
         isCustom = false,
         position = null,
-        shape = ClipAreaShape.oval;
+        shape = ClipAreaShape.rectangle;
 
   TouchThrough.custom({
     required this.area,
