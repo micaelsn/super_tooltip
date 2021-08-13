@@ -398,15 +398,24 @@ class SuperTooltipBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     late Widget backgroundContent;
 
+    final touchThrough = background.touchThrough;
+    final position = touchThrough?.position != null
+        ? touchThrough!.position!(targetCenter)
+        : targetCenter;
+
     final shapeOverlay = ShapeOverlay(
-      Rect.fromLTWH(
-        targetCenter.dx - (background.touchThrough?.area?.left ?? 0),
-        targetCenter.dy - (background.touchThrough?.area?.top ?? 0),
-        (background.touchThrough?.area?.width ?? 0),
-        (background.touchThrough?.area?.height ?? 0),
-      ),
-      background.touchThrough?.shape ?? ClipAreaShape.rectangle,
-      background.touchThrough?.borderRadius ?? 0,
+      touchThrough?.isCustom ?? false
+          ? touchThrough!.area
+          : Rect.fromCenter(
+              center: Offset(
+                position.dx,
+                position.dy,
+              ),
+              width: (touchThrough?.area.width ?? 0),
+              height: (touchThrough?.area.height ?? 0),
+            ),
+      touchThrough?.shape ?? ClipAreaShape.rectangle,
+      touchThrough?.borderRadius ?? 0,
       background.outsideColor,
     );
     final backgroundDecoration =
