@@ -35,50 +35,39 @@ class SuperTooltip {
               child: Icon(Icons.close),
             );
 
-  ///
   /// The content of the Tooltip
   final Widget content;
 
-  ///
   /// optional handler that gets called when the Tooltip is closed
   final OnCloseCallback? onClose;
 
-  ///
   /// [constraints] optional size constraints.
   /// If a constraint is not set the size will ajust to the content
   final TipConstraints? constraints;
 
-  ///
   /// The minium padding from the Tooltip to the screen limits
   final double margin;
 
   /// [tipPosition] positions the Tooltip screen
   final TipPosition tipPosition;
 
-  ///
   /// The position of the close button, set to null to hide the close button
   final CloseButtonPosition? closeButtonPosition;
 
-  ///
   /// [boxShadow] defines the tooltip shadow
   // TODO: add default shadow factory
   final List<BoxShadow>? boxShadow;
 
-  ///
   /// the decoration applied to the border of the Tooltip
   final BorderDecoration? borderDecoration;
 
-  ///
   /// The decoration applied to the arrow
   final ArrowDecoration arrowDecoration;
 
-  ///
-  /// The widget that is used to close the Tooltip
-  ///
+  /// The widget that is used to close the Tooltip///
   /// uses Icon(Icons.close) by default
   final PreferredSize closeWidget;
 
-  ///
   /// The background of the Tooltip
   final TipBackground? background;
 

@@ -54,7 +54,6 @@ class TipPosition {
   final double? right;
   final SnapAxis snapTo;
 
-  ///
   /// The direcion in which the tooltip should open
   final TipDirection direction;
 
@@ -63,13 +62,11 @@ class TipPosition {
   bool get isTopSide => top == 0;
   bool get isBottomSide => bottom == 0;
 
-  ///
   /// If [snapsHorizontal] == true the bigger free space left or right of the target will be
   /// covered completely by the ToolTip.
   bool get snapsHorizontal =>
       snapTo == SnapAxis.horizontal || (left == 0 && right == 0);
 
-  ///
   /// If [snapsVertical] == true the bigger free space above or below the target will be
   /// covered completely by the ToolTip.
   bool get snapsVertical =>

@@ -11,7 +11,6 @@ class TipBackground {
     this.touchThrough,
   });
 
-  ///
   /// The backgroundcolor of the Tooltip
   final Color color;
 
@@ -19,15 +18,12 @@ class TipBackground {
   /// typically a translucent color.
   final Color outsideColor;
 
-  ///
   /// Allow the tooltip to be dismissed tapping outside
   final bool dismissible;
 
-  ///
   /// Block pointer actions or pass them through background
   final bool absorbPointerEvents;
 
-  ///
   /// By default touching the surrounding of the Tooltip closes the tooltip.
   /// you can define a rectangle area where the background is completely transparent
   /// and the widgets below react to touch

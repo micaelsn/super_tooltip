@@ -45,7 +45,6 @@ class BubbleShape extends ShapeBorder {
 
     /// starts at the bottom-left corner, and ends at the top-right corner
     /// Bottom Left => Top Left => Top Right
-    ///
     /// Bottom left corner & Top right corner are added
     Path _getRightTopPath(Rect rect) {
       return Path()
@@ -65,7 +64,6 @@ class BubbleShape extends ShapeBorder {
 
     /// starts at the bottom-left corner, and ends at the top-right corner
     /// Bottom Left => Bottom Right => Top Right
-    ///
     /// Bottom right corner & Top right corner are added
     Path _getBottomRightPath(Rect rect) {
       return Path()

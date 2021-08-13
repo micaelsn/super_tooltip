@@ -76,11 +76,9 @@ class TouchThrough {
 
   final Rect area;
 
-  ///
   /// The shape of the [area].
   final ClipAreaShape shape;
 
-  ///
   /// If [shape] is [ClipAreaShape.rectangle] you can define a border radius
   final double borderRadius;
 
