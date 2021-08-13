@@ -18,8 +18,8 @@ class TouchThrough {
   });
 
   TouchThrough.oval({
-    double height = 50,
-    double width = 500,
+    double height = 120,
+    double width = 200,
   })  : area = Rect.fromCenter(
           center: const Offset(0, 0),
           width: width,
@@ -31,7 +31,7 @@ class TouchThrough {
         shape = ClipAreaShape.oval;
 
   TouchThrough.circle({
-    double size = 50,
+    double size = 200,
   })  : area = Rect.fromCenter(
           center: const Offset(0, 0),
           width: size,
@@ -43,8 +43,8 @@ class TouchThrough {
         shape = ClipAreaShape.oval;
 
   TouchThrough.rect({
-    double height = 50,
-    double width = 100,
+    double height = 120,
+    double width = 200,
     this.borderRadius = 5,
   })  : area = Rect.fromCenter(
           center: const Offset(0, 0),
@@ -53,10 +53,10 @@ class TouchThrough {
         ),
         isCustom = false,
         position = null,
-        shape = ClipAreaShape.oval;
+        shape = ClipAreaShape.rectangle;
 
   TouchThrough.square({
-    double size = 50,
+    double size = 200,
     this.borderRadius = 5,
   })  : area = Rect.fromCenter(
           center: const Offset(0, 0),
