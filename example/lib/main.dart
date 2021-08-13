@@ -64,7 +64,7 @@ class _TargetWidgetState extends State<TargetWidget> {
     return SuperTooltipBuilder(
       key: const Key('tooltip'),
       tooltip: SuperTooltip(
-        pointerDecoration: const PointerDecoration(
+        arrowDecoration: const ArrowDecoration(
           distanceFromCenter: 16,
           baseWidth: 60,
           height: 30,

@@ -11,6 +11,7 @@ class TouchThrough {
     this.shape = ClipAreaShape.oval,
     this.borderRadius = 5.0,
     this.area,
+    this.centerArea = true,
   });
 
   factory TouchThrough.oval({Rect? area}) {
@@ -39,4 +40,7 @@ class TouchThrough {
   ///
   /// If [shape] is [ClipAreaShape.rectangle] you can define a border radius
   final double borderRadius;
+
+  // TODO: [centerArea] is not used yet
+  final bool centerArea;
 }

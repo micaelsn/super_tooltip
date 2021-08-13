@@ -4,24 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'enums.dart';
+import 'models/arrow_decoration.model.dart';
 import 'models/border_decoration.model.dart';
-import 'models/pointer_decoration.model.dart';
 import 'models/tip_position.model.dart';
 
 class BubbleShape extends ShapeBorder {
   BubbleShape({
     required this.direction,
     required this.targetCenter,
-    PointerDecoration? pointerDecoration,
+    ArrowDecoration? pointerDecoration,
     BorderDecoration? borderDecoration,
     required this.position,
     required this.backgroundColor,
   })  : _borderDecoration = borderDecoration ?? const BorderDecoration(),
-        _pointerDecoration = pointerDecoration ?? const PointerDecoration();
+        _pointerDecoration = pointerDecoration ?? const ArrowDecoration();
 
   final TipDirection direction;
   final Offset targetCenter;
-  final PointerDecoration _pointerDecoration;
+  final ArrowDecoration _pointerDecoration;
   final BorderDecoration _borderDecoration;
   final TipPosition position;
   final Color backgroundColor;
