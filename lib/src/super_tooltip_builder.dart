@@ -379,7 +379,11 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                               child: SizedBox(
                                 height: widget.tooltip.closeTipObject.height,
                                 width: widget.tooltip.closeTipObject.width,
-                                child: widget.tooltip.closeTipObject.child,
+                                child: widget.tooltip.closeTipObject.child ??
+                                    const PreferredSize(
+                                      preferredSize: Size.fromHeight(35),
+                                      child: Icon(Icons.close),
+                                    ),
                               ),
                             ),
                           ),
