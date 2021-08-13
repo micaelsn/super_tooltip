@@ -9,6 +9,7 @@ import 'models/super_tooltip.model.dart';
 import 'pop_up_balloon_layout_delegate.dart';
 import 'shape_overlay.dart';
 
+//TODO: Add a controller instead of using the method directly
 typedef TargetBuilder = Widget Function(BuildContext, ShowHandler);
 
 /// provide the key if you wish to override the default widget context
@@ -17,7 +18,7 @@ typedef ShowHandler = void Function({
   GlobalKey? key,
 });
 
-var _isOpen = false;
+var _isShowing = false;
 
 class SuperTooltipBuilder extends StatefulWidget {
   SuperTooltipBuilder({
@@ -36,7 +37,7 @@ class SuperTooltipBuilder extends StatefulWidget {
 class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
   final _overlays = <OverlayEntry>[];
 
-  void _close() async {
+  void _remove() async {
     if (widget.tooltip.onClose != null) {
       widget.tooltip.onClose!();
     }
@@ -46,7 +47,7 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
     }
 
     _overlays.clear();
-    _isOpen = false;
+    _isShowing = false;
   }
 
   _SuperTooltip _superTooltip(
@@ -57,7 +58,7 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
       tooltip: widget.tooltip,
       targetCenter: targetCenter,
       targetSize: size,
-      close: _close,
+      close: _remove,
     );
   }
 
@@ -68,9 +69,9 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
   }) async {
     if (key != null)
       assert(key.currentWidget != null, 'The key must be assigned to a widget');
-    if (_isOpen) {
-      _close();
-      _isOpen = false;
+    if (_isShowing) {
+      _remove();
+      _isShowing = false;
       return;
     }
     var _context = targetContext;
@@ -95,7 +96,7 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
     _overlays.add(_balloonOverlay);
 
     _overlay.insertAll(_overlays);
-    _isOpen = true;
+    _isShowing = true;
   }
 
   @override
@@ -104,8 +105,8 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
       onWillPop: () async {
         // If the tooltip is open we don't pop the page on a backbutton press
         // but close the ToolTip
-        if (_isOpen) {
-          _close();
+        if (_isShowing) {
+          _remove();
           return false;
         }
         return true;
@@ -170,7 +171,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
     if (widget.tooltip.closeButtonPosition?.isOutside ?? false)
       top = widget.tooltip.closeWidget.preferredSize.height + 5;
 
-    final distanceAway = widget.tooltip.pointerDecoration.distanceAway;
+    final distanceAway = widget.tooltip.arrowDecoration.distanceAway;
 
     switch (tipDirection) {
       case TipDirection.down:
@@ -243,7 +244,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
             direction: _popupDirection,
             targetCenter: widget.targetCenter,
             borderDecoration: widget.tooltip.borderDecoration,
-            pointerDecoration: widget.tooltip.pointerDecoration,
+            pointerDecoration: widget.tooltip.arrowDecoration,
             position: TipPosition.fromLTRB(
               _left,
               _top,
@@ -319,7 +320,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                           // LEFT: -------------------------------------
                           case TipDirection.left:
                             right =
-                                widget.tooltip.pointerDecoration.distanceAway +
+                                widget.tooltip.arrowDecoration.distanceAway +
                                     3.0;
                             if (closePosition.isInside) {
                               top = 2.0;
@@ -347,9 +348,9 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                             // is smaller than _outSideCloseButtonPadding which would mean arrowLength would need to be increased if the button is ouside.
                             right = 2.0;
                             if (closePosition.isInside) {
-                              top = widget
-                                      .tooltip.pointerDecoration.distanceAway +
-                                  2.0;
+                              top =
+                                  widget.tooltip.arrowDecoration.distanceAway +
+                                      2.0;
                             } else if (closePosition.isOutside) {
                               top = 0.0;
                             } else
