@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:super_tooltip/src/models/close_tip_object.model.dart';
 
 import '../enums.dart';
 import 'models.dart';
@@ -15,31 +16,44 @@ class SuperTooltip {
     this.onClose,
     this.constraints,
     this.margin = 16.0,
-    this.closeButtonPosition = CloseButtonPosition.inside,
+    this.closeTipObject = const CloseTipObject.inside(),
+    this.elevation = 1,
+    this.borderDecoration,
+    this.arrowDecoration = const ArrowDecoration(),
+    this.background,
+    this.contentBackgroundColor = Colors.white,
+    this.animationDuration = const Duration(milliseconds: 400),
+    this.tipPosition = const TipPosition.side(TipDirection.down),
+  })  : assert((constraints?.maxWidth ?? double.infinity) >=
+            (constraints?.minWidth ?? 0.0)),
+        assert((constraints?.maxHeight ?? double.infinity) >=
+            (constraints?.minHeight ?? 0.0)),
+        boxShadow = null;
+
+  SuperTooltip.shadow({
+    required this.content, // The contents of the tooltip.
+    this.onClose,
+    this.constraints,
+    this.margin = 16.0,
+    this.closeTipObject = const CloseTipObject.inside(),
     this.boxShadow,
     this.borderDecoration,
     this.arrowDecoration = const ArrowDecoration(),
     this.background,
     this.contentBackgroundColor = Colors.white,
     this.animationDuration = const Duration(milliseconds: 400),
-    TipPosition? tipPosition,
-    PreferredSize? closeWidget,
+    this.tipPosition = const TipPosition.side(TipDirection.down),
   })  : assert((constraints?.maxWidth ?? double.infinity) >=
             (constraints?.minWidth ?? 0.0)),
         assert((constraints?.maxHeight ?? double.infinity) >=
             (constraints?.minHeight ?? 0.0)),
-        tipPosition = tipPosition ?? TipPosition.side(TipDirection.down),
-        closeWidget = closeWidget ??
-            const PreferredSize(
-              preferredSize: Size.fromHeight(35),
-              child: Icon(Icons.close),
-            );
-
-  /// The content of the Tooltip
-  final Widget content;
+        elevation = 0;
 
   /// optional handler that gets called when the Tooltip is closed
   final OnCloseCallback? onClose;
+
+  /// The content of the Tooltip
+  final Widget content;
 
   /// [constraints] optional size constraints.
   /// If a constraint is not set the size will ajust to the content
@@ -51,22 +65,24 @@ class SuperTooltip {
   /// [tipPosition] positions the Tooltip screen
   final TipPosition tipPosition;
 
-  /// The position of the close button, set to null to hide the close button
-  final CloseButtonPosition? closeButtonPosition;
-
   /// [boxShadow] defines the tooltip shadow
-  // TODO: add default shadow factory
   final List<BoxShadow>? boxShadow;
+
+  final CloseTipObject closeTipObject;
+
+  /// The z-coordinate at which to place the tooltip when open.
+  ///
+  /// The following elevations have defined shadows: 1, 2, 3, 4, 6, 8, 9, 12,
+  /// 16, and 24.
+  ///
+  /// See [kElevationToShadow].
+  final int elevation;
 
   /// the decoration applied to the border of the Tooltip
   final BorderDecoration? borderDecoration;
 
   /// The decoration applied to the arrow
   final ArrowDecoration arrowDecoration;
-
-  /// The widget that is used to close the Tooltip///
-  /// uses Icon(Icons.close) by default
-  final PreferredSize closeWidget;
 
   /// The background of the Tooltip
   final TipBackground? background;
