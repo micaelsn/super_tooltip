@@ -17,51 +17,62 @@ class TouchThrough {
     this.isCustom = false,
   });
 
-  factory TouchThrough.oval({
-    SizedBox? area,
-    TouchThroughPosition? position,
-  }) {
-    return TouchThrough._(
-      area: Rect.fromCenter(
-        center: const Offset(0, 0),
-        width: area?.width ?? 0,
-        height: area?.height ?? 0,
-      ),
-      shape: ClipAreaShape.oval,
-      position: position,
-    );
-  }
+  TouchThrough.oval({
+    double height = 50,
+    double width = 500,
+  })  : area = Rect.fromCenter(
+          center: const Offset(0, 0),
+          width: width,
+          height: height,
+        ),
+        borderRadius = 0,
+        isCustom = false,
+        position = null,
+        shape = ClipAreaShape.oval;
 
-  factory TouchThrough.rect({
-    SizedBox? area,
-    double? borderRadius,
-    TouchThroughPosition? position,
-  }) {
-    return TouchThrough._(
-      area: Rect.fromCenter(
-        center: const Offset(0, 0),
-        width: area?.width ?? 0,
-        height: area?.height ?? 0,
-      ),
-      shape: ClipAreaShape.rectangle,
-      borderRadius: borderRadius ?? 5,
-      position: position,
-    );
-  }
+  TouchThrough.circle({
+    double size = 50,
+  })  : area = Rect.fromCenter(
+          center: const Offset(0, 0),
+          width: size,
+          height: size,
+        ),
+        borderRadius = 0,
+        isCustom = false,
+        position = null,
+        shape = ClipAreaShape.oval;
 
-  factory TouchThrough.custom({
-    required Rect area,
-    double? borderRadius,
-    TouchThroughPosition? position,
-  }) {
-    return TouchThrough._(
-      area: area,
-      shape: ClipAreaShape.rectangle,
-      borderRadius: borderRadius ?? 5,
-      position: position,
-      isCustom: true,
-    );
-  }
+  TouchThrough.rect({
+    double height = 50,
+    double width = 100,
+    this.borderRadius = 5,
+  })  : area = Rect.fromCenter(
+          center: const Offset(0, 0),
+          width: width,
+          height: height,
+        ),
+        isCustom = false,
+        position = null,
+        shape = ClipAreaShape.oval;
+
+  TouchThrough.square({
+    double size = 50,
+    this.borderRadius = 5,
+  })  : area = Rect.fromCenter(
+          center: const Offset(0, 0),
+          width: size,
+          height: size,
+        ),
+        isCustom = false,
+        position = null,
+        shape = ClipAreaShape.oval;
+
+  TouchThrough.custom({
+    required this.area,
+    this.borderRadius = 5,
+    this.shape = ClipAreaShape.rectangle,
+  })  : isCustom = true,
+        position = null;
 
   final Rect area;
 
