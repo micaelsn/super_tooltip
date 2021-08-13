@@ -78,15 +78,7 @@ class _TargetWidgetState extends State<TargetWidget> {
         // tipPosition: TipPosition.side(direction)
         background: TipBackground(
           absorbPointerEvents: false,
-          touchThrough: TouchThrough.rect(
-            area: const SizedBox(
-              height: 150,
-              width: 200,
-            ),
-            position: (center) {
-              return center;
-            },
-          ),
+          touchThrough: TouchThrough.rect(),
         ),
         contentBackgroundColor: Colors.pink,
         content: const Padding(
