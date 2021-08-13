@@ -13,7 +13,7 @@ void main() {
         'should return true when snapTo is horizontal',
         () {
           // set up
-          final tipPosition = TipPosition.snap(SnapAxis.horizontal);
+          const tipPosition = TipPosition.snap(SnapAxis.horizontal);
           // assert
           expect(tipPosition.snapsHorizontal, isTrue);
         },
@@ -23,7 +23,7 @@ void main() {
         'should return true when left & right are 0',
         () {
           // set up
-          final tipPosition = TipPosition(
+          const tipPosition = TipPosition(
             left: 0,
             right: 0,
           );

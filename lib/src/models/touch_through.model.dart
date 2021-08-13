@@ -9,6 +9,7 @@ typedef TouchThroughPosition = Offset Function(Offset);
 /// you can define a rectangle area where the background is completely transparent
 /// and the widgets below react to touch
 class TouchThrough {
+  // ignore: unused_element
   const TouchThrough._({
     required this.area,
     this.shape = ClipAreaShape.oval,
