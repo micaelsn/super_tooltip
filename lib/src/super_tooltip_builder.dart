@@ -188,7 +188,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
       default:
         throw AssertionError(
-            'Unsupported TipDirection ${widget.tooltip.tipPosition.direction}');
+            'Unsupported TipDirection ${widget.tooltip.tipContent.position.direction}');
       // return EdgeInsets.zero;
     }
   }
@@ -200,14 +200,15 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
   @override
   Widget build(BuildContext context) {
-    var _left = widget.tooltip.tipPosition.left,
-        _right = widget.tooltip.tipPosition.right,
-        _top = widget.tooltip.tipPosition.top,
-        _bottom = widget.tooltip.tipPosition.bottom;
-    var _popupDirection = widget.tooltip.tipPosition.direction;
+    final position = widget.tooltip.tipContent.position;
+    var _left = position.left,
+        _right = position.right,
+        _top = position.top,
+        _bottom = position.bottom;
+    var _popupDirection = position.direction;
 
     /// Handling snap far away feature.
-    if (widget.tooltip.tipPosition.snapsVertical) {
+    if (position.snapsVertical) {
       _left = 0.0;
       _right = 0.0;
       if ((widget.targetCenter.dy) >
@@ -220,7 +221,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
       }
     }
     // Only one of of them is possible, and vertical has higher priority.
-    else if (widget.tooltip.tipPosition.snapsHorizontal) {
+    else if (position.snapsHorizontal) {
       _top = 0.0;
       _bottom = 0.0;
       if (widget.targetCenter.dx <
@@ -236,15 +237,15 @@ class __SuperTooltipState extends State<_SuperTooltip> {
     final content = Container(
       margin: _getBalloonContainerMargin(_popupDirection),
       decoration: ShapeDecoration(
-        color: widget.tooltip.contentBackgroundColor,
+        color: widget.tooltip.tipContent.backgroundColor,
         shadows: widget.tooltip.boxShadow ??
             kElevationToShadow[widget.tooltip.elevation],
         shape: BubbleShape(
-          backgroundColor: widget.tooltip.contentBackgroundColor,
+          backgroundColor: widget.tooltip.tipContent.backgroundColor,
           direction: _popupDirection,
           targetCenter: widget.targetCenter,
           borderDecoration: widget.tooltip.borderDecoration,
-          pointerDecoration: widget.tooltip.arrowDecoration,
+          arrowDecoration: widget.tooltip.arrowDecoration,
           position: TipPosition.fromLTRB(
             _left,
             _top,
@@ -262,7 +263,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                       _getBalloonContainerMargin(_popupDirection).right -
                       8)
               : EdgeInsets.zero,
-          child: widget.tooltip.content,
+          child: widget.tooltip.tipContent.child,
         ),
       ),
     );
@@ -290,11 +291,11 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                   targetCenter: widget.targetCenter,
                   tipConstraints: TipConstraints(
                     minWidth: widget.tooltip.constraints?.minWidth,
-                    maxWidth: widget.tooltip.tipPosition.snapsHorizontal
+                    maxWidth: position.snapsHorizontal
                         ? null
                         : widget.tooltip.constraints?.maxWidth,
                     minHeight: widget.tooltip.constraints?.minHeight,
-                    maxHeight: widget.tooltip.tipPosition.snapsVertical
+                    maxHeight: position.snapsVertical
                         ? null
                         : widget.tooltip.constraints?.maxHeight,
                   ),
@@ -310,7 +311,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                   fit: StackFit.passthrough,
                   clipBehavior: Clip.none,
                   children: [
-                    if (widget.tooltip.tipPosition.hasSnaps)
+                    if (position.hasSnaps)
                       Positioned.fill(child: content)
                     else
                       content,

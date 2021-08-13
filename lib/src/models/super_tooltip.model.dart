@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:super_tooltip/src/models/close_tip_object.model.dart';
 
-import '../enums.dart';
 import 'models.dart';
 
 typedef OnCloseCallback = void Function();
@@ -12,7 +11,7 @@ typedef OnCloseCallback = void Function();
 ///
 class SuperTooltip {
   SuperTooltip({
-    required this.content, // The contents of the tooltip.
+    required this.tipContent,
     this.onClose,
     this.constraints,
     this.margin = 16.0,
@@ -21,9 +20,7 @@ class SuperTooltip {
     this.borderDecoration,
     this.arrowDecoration = const ArrowDecoration(),
     this.background,
-    this.contentBackgroundColor = Colors.white,
     this.animationDuration = const Duration(milliseconds: 400),
-    this.tipPosition = const TipPosition.side(TipDirection.down),
   })  : assert((constraints?.maxWidth ?? double.infinity) >=
             (constraints?.minWidth ?? 0.0)),
         assert((constraints?.maxHeight ?? double.infinity) >=
@@ -31,7 +28,7 @@ class SuperTooltip {
         boxShadow = null;
 
   SuperTooltip.shadow({
-    required this.content, // The contents of the tooltip.
+    required this.tipContent, // The contents of the tooltip.
     this.onClose,
     this.constraints,
     this.margin = 16.0,
@@ -40,9 +37,7 @@ class SuperTooltip {
     this.borderDecoration,
     this.arrowDecoration = const ArrowDecoration(),
     this.background,
-    this.contentBackgroundColor = Colors.white,
     this.animationDuration = const Duration(milliseconds: 400),
-    this.tipPosition = const TipPosition.side(TipDirection.down),
   })  : assert((constraints?.maxWidth ?? double.infinity) >=
             (constraints?.minWidth ?? 0.0)),
         assert((constraints?.maxHeight ?? double.infinity) >=
@@ -53,7 +48,7 @@ class SuperTooltip {
   final OnCloseCallback? onClose;
 
   /// The content of the Tooltip
-  final Widget content;
+  final TipContent tipContent;
 
   /// [constraints] optional size constraints.
   /// If a constraint is not set the size will ajust to the content
@@ -61,9 +56,6 @@ class SuperTooltip {
 
   /// The minium padding from the Tooltip to the screen limits
   final double margin;
-
-  /// [tipPosition] positions the Tooltip screen
-  final TipPosition tipPosition;
 
   /// [boxShadow] defines the tooltip shadow
   final List<BoxShadow>? boxShadow;
@@ -87,6 +79,5 @@ class SuperTooltip {
   /// The background of the Tooltip
   final TipBackground? background;
 
-  final Color contentBackgroundColor;
   final Duration animationDuration;
 }
