@@ -1,5 +1,5 @@
-class PointerDecoration {
-  const PointerDecoration({
+class ArrowDecoration {
+  const ArrowDecoration({
     ///
     /// The width of the pointer at its base
     this.baseWidth = 20,

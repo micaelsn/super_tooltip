@@ -18,7 +18,7 @@ class SuperTooltip {
     this.closeButtonPosition = CloseButtonPosition.inside,
     this.boxShadow,
     this.borderDecoration,
-    this.pointerDecoration = const PointerDecoration(),
+    this.arrowDecoration = const ArrowDecoration(),
     this.background,
     this.contentBackgroundColor = Colors.white,
     this.animationDuration = const Duration(milliseconds: 400),
@@ -61,6 +61,7 @@ class SuperTooltip {
 
   ///
   /// [boxShadow] defines the tooltip shadow
+  // TODO: add default shadow factory
   final List<BoxShadow>? boxShadow;
 
   ///
@@ -68,8 +69,8 @@ class SuperTooltip {
   final BorderDecoration? borderDecoration;
 
   ///
-  /// The decoration applied to the pointer
-  final PointerDecoration pointerDecoration;
+  /// The decoration applied to the arrow
+  final ArrowDecoration arrowDecoration;
 
   ///
   /// The widget that is used to close the Tooltip
