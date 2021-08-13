@@ -5,14 +5,14 @@ enum TipDirection {
   right,
 }
 
-enum CloseButtonPosition {
+enum ClosePosition {
   inside,
   outside,
 }
 
-extension CloseButtonPositionExtension on CloseButtonPosition {
-  bool get isInside => this == CloseButtonPosition.inside;
-  bool get isOutside => this == CloseButtonPosition.outside;
+extension CloseButtonPositionExtension on ClosePosition {
+  bool get isInside => this == ClosePosition.inside;
+  bool get isOutside => this == ClosePosition.outside;
 }
 
 enum ClipAreaShape {

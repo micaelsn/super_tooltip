@@ -168,8 +168,8 @@ class __SuperTooltipState extends State<_SuperTooltip> {
   EdgeInsets _getBalloonContainerMargin(TipDirection tipDirection) {
     var top = 0.0;
 
-    if (widget.tooltip.closeButtonPosition?.isOutside ?? false)
-      top = widget.tooltip.closeWidget.preferredSize.height + 5;
+    if (widget.tooltip.closeTipObject.position?.isOutside ?? false)
+      top = widget.tooltip.closeTipObject.height + 5;
 
     final distanceAway = widget.tooltip.arrowDecoration.distanceAway;
 
@@ -235,26 +235,35 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
     final content = Container(
       margin: _getBalloonContainerMargin(_popupDirection),
-      clipBehavior: Clip.hardEdge,
       decoration: ShapeDecoration(
-          color: widget.tooltip.contentBackgroundColor,
-          shadows: widget.tooltip.boxShadow,
-          shape: BubbleShape(
-            backgroundColor: widget.tooltip.contentBackgroundColor,
-            direction: _popupDirection,
-            targetCenter: widget.targetCenter,
-            borderDecoration: widget.tooltip.borderDecoration,
-            pointerDecoration: widget.tooltip.arrowDecoration,
-            position: TipPosition.fromLTRB(
-              _left,
-              _top,
-              _right,
-              _bottom,
-            ),
-          )),
+        color: widget.tooltip.contentBackgroundColor,
+        shadows: widget.tooltip.boxShadow ??
+            kElevationToShadow[widget.tooltip.elevation],
+        shape: BubbleShape(
+          backgroundColor: widget.tooltip.contentBackgroundColor,
+          direction: _popupDirection,
+          targetCenter: widget.targetCenter,
+          borderDecoration: widget.tooltip.borderDecoration,
+          pointerDecoration: widget.tooltip.arrowDecoration,
+          position: TipPosition.fromLTRB(
+            _left,
+            _top,
+            _right,
+            _bottom,
+          ),
+        ),
+      ),
       child: Material(
         type: MaterialType.transparency,
-        child: widget.tooltip.content,
+        child: Padding(
+          padding: (widget.tooltip.closeTipObject.position?.isInside ?? false)
+              ? EdgeInsets.only(
+                  right: widget.tooltip.closeTipObject.width -
+                      _getBalloonContainerMargin(_popupDirection).right -
+                      8)
+              : EdgeInsets.zero,
+          child: widget.tooltip.content,
+        ),
       ),
     );
 
@@ -298,6 +307,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                 ),
                 child: Stack(
                   fit: StackFit.passthrough,
+                  clipBehavior: Clip.none,
                   children: [
                     if (widget.tooltip.tipPosition.hasSnaps)
                       Positioned.fill(child: content)
@@ -306,11 +316,10 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                     Builder(
                       builder: (context) {
                         final closePosition =
-                            widget.tooltip.closeButtonPosition;
+                            widget.tooltip.closeTipObject.position;
 
-                        if (closePosition == null) {
-                          return const SizedBox();
-                        }
+                        if (closePosition == null)
+                          return const SizedBox(height: 0);
 
                         double? right;
                         double? top;
@@ -352,7 +361,9 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                                   widget.tooltip.arrowDecoration.distanceAway +
                                       2.0;
                             } else if (closePosition.isOutside) {
-                              top = 0.0;
+                              top = -widget.tooltip.closeTipObject.height +
+                                  widget.tooltip.arrowDecoration.distanceAway -
+                                  2;
                             } else
                               throw AssertionError(closePosition);
                             break;
@@ -365,7 +376,11 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                             onTap: _close,
                             child: AbsorbPointer(
                               absorbing: true,
-                              child: widget.tooltip.closeWidget,
+                              child: SizedBox(
+                                height: widget.tooltip.closeTipObject.height,
+                                width: widget.tooltip.closeTipObject.width,
+                                child: widget.tooltip.closeTipObject.child,
+                              ),
                             ),
                           ),
                         );
