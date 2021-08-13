@@ -64,35 +64,29 @@ class _TargetWidgetState extends State<TargetWidget> {
     return SuperTooltipBuilder(
       key: const Key('tooltip'),
       tooltip: SuperTooltip(
+        margin: 16,
+        elevation: 8,
+        closeTipObject: const CloseTipObject.inside(),
         arrowDecoration: const ArrowDecoration(
           distanceFromCenter: 16,
-          baseWidth: 60,
+          baseWidth: 40,
           height: 30,
         ),
-        margin: 16,
-        closeButtonPosition: CloseButtonPosition.inside,
         borderDecoration: const BorderDecoration(
           color: Colors.black,
           width: 1,
         ),
-        // tipPosition: TipPosition.side(direction)
         background: TipBackground(
           absorbPointerEvents: false,
-          touchThrough: TouchThrough.rect(),
+          touchThrough: TouchThrough.square(),
         ),
-        contentBackgroundColor: Colors.pink,
-        content: const Padding(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ',
-            softWrap: true,
-          ),
-        ),
-        closeWidget: const PreferredSize(
-          preferredSize: Size(30, 30),
-          child: SafeArea(
-            child: Center(
-              child: Icon(Icons.delete),
+        tipContent: const TipContent(
+          backgroundColor: Colors.pink,
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Text(
+              's e d  d i a m  v o l u p t u a . A t  v e r o  e o s  e t  a c c u s a m  e t  j u s t o  d u o  d o l o r e s  e t  e a  r e b u m ',
+              softWrap: true,
             ),
           ),
         ),
