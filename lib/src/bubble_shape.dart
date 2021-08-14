@@ -2,15 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:super_tooltip/src/models/absolute_position.dart';
 
 import 'models/arrow_decoration.model.dart';
 import 'models/border_decoration.model.dart';
-import 'models/tip_position.model.dart';
 import 'public_enums.dart';
 
 class BubbleShape extends ShapeBorder {
   BubbleShape({
-    required this.direction,
     required this.targetCenter,
     ArrowDecoration? arrowDecoration,
     BorderDecoration? borderDecoration,
@@ -19,11 +18,10 @@ class BubbleShape extends ShapeBorder {
   })  : _borderDecoration = borderDecoration ?? const BorderDecoration(),
         _arrowDecoration = arrowDecoration ?? const ArrowDecoration();
 
-  final TipDirection direction;
   final Offset targetCenter;
   final ArrowDecoration _arrowDecoration;
   final BorderDecoration _borderDecoration;
-  final TipPosition position;
+  final AbsolutePosition position;
   final Color backgroundColor;
 
   @override
@@ -89,7 +87,7 @@ class BubbleShape extends ShapeBorder {
     bottomRightRadius =
         position.hasBottomRightRadius ? 0.0 : _borderDecoration.radius;
 
-    switch (direction) {
+    switch (position.direction) {
       // draws arrow pointing up
       case TipDirection.down:
         return _getBottomRightPath(rect)
@@ -260,7 +258,7 @@ class BubbleShape extends ShapeBorder {
               radius: Radius.circular(bottomLeftRadius), clockwise: false);
 
       default:
-        throw AssertionError(direction);
+        throw AssertionError(position.direction);
     }
   }
 
@@ -346,7 +344,6 @@ class BubbleShape extends ShapeBorder {
   ShapeBorder scale(double t) {
     return BubbleShape(
       backgroundColor: backgroundColor,
-      direction: direction,
       targetCenter: targetCenter,
       borderDecoration: _borderDecoration,
       position: position,

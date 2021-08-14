@@ -9,7 +9,6 @@ import 'extensions.dart';
 import 'models/models.dart';
 import 'models/super_tooltip.model.dart';
 import 'pop_up_balloon_layout_delegate.dart';
-import 'public_enums.dart';
 
 //TODO: Add a controller instead of using the method directly
 typedef TargetBuilder = Widget Function(BuildContext, ShowHandler);
@@ -174,88 +173,42 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
   @override
   Widget build(BuildContext context) {
-    var position = widget.tooltip.tipContent.position;
-    var _left = position.left,
-        _right = position.right,
-        _top = position.top,
-        _bottom = position.bottom;
-    var _popupDirection = position.direction;
+    final position = widget.tooltip.tipContent.position;
     var _contentRight = 0.0, _contentTop = 0.0;
     var _wrapInSafeArea = false;
 
     /// Handling snap far away feature.
     if (position.snapsVertical) {
-      _left = 0.0;
-      _right = 0.0;
       _contentRight = widget.tooltip.closeTipObject.width -
-          _popupDirection.getMargin(widget.tooltip).right -
+          position.direction.getMargin(widget.tooltip).right -
           8;
-      if (position.hasPreference) {
-        if (position.direction.isUp) {
-          _top = 0.0;
-          _popupDirection = TipDirection.up;
-        } else {
-          _bottom = 0.0;
-          _popupDirection = TipDirection.down;
-        }
-      } else
-      // check if top position is greater than bottom
-      if ((widget.targetCenter.dy) >
-          (widget.targetSize?.center(Offset.zero).dy ?? 0)) {
-        _popupDirection = TipDirection.up;
-        _top = 0.0;
-      } else {
-        _popupDirection = TipDirection.down;
-        _bottom = 0.0;
-      }
     } else if (position.snapsHorizontal) {
-      _top = 0.0;
-      _bottom = 0.0;
       _wrapInSafeArea = true;
-      if (position.hasPreference) {
-        if (position.direction.isRight) {
-          _right = 0.0;
-          _popupDirection = TipDirection.right;
-        } else {
-          _left = 0.0;
-          _popupDirection = TipDirection.left;
-        }
-      } else {
+      if (!position.hasPreference) {
         if (widget.tooltip.closeTipObject.position?.isInside ?? false) {
           _contentTop = widget.tooltip.closeTipObject.height;
-        }
-
-        // check if right position is greater than left
-        if (widget.targetCenter.dx <
-            (widget.targetSize?.center(Offset.zero).dx ?? 0)) {
-          _popupDirection = TipDirection.right;
-
-          _right = 0.0;
-        } else {
-          _popupDirection = TipDirection.left;
-          _left = 0.0;
         }
       }
     }
 
+    final absolutePosition = position.getPosition(
+      widget.targetCenter,
+      widget.targetSize,
+      defaultDirection: position.direction,
+    );
+
     final content = Container(
-      margin: _popupDirection.getMargin(widget.tooltip),
+      margin: absolutePosition.direction.getMargin(widget.tooltip),
       decoration: ShapeDecoration(
         color: widget.tooltip.tipContent.backgroundColor,
         shadows: widget.tooltip.boxShadow ??
             kElevationToShadow[widget.tooltip.elevation],
         shape: BubbleShape(
           backgroundColor: widget.tooltip.tipContent.backgroundColor,
-          direction: _popupDirection,
           targetCenter: widget.targetCenter,
           borderDecoration: widget.tooltip.borderDecoration,
           arrowDecoration: widget.tooltip.arrowDecoration,
-          position: TipPosition.fromLTRB(
-            _left,
-            _top,
-            _right,
-            _bottom,
-          ),
+          position: absolutePosition,
         ),
       ),
       child: Material(
@@ -297,7 +250,6 @@ class __SuperTooltipState extends State<_SuperTooltip> {
             Positioned.fill(
               child: CustomSingleChildLayout(
                 delegate: PopupBalloonLayoutDelegate(
-                  direction: _popupDirection,
                   targetCenter: widget.targetCenter,
                   tipConstraints: TipConstraints(
                     minWidth: widget.tooltip.constraints?.minWidth,
@@ -309,13 +261,8 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                         ? null
                         : widget.tooltip.constraints?.maxHeight,
                   ),
-                  margin: widget.tooltip.margin,
-                  position: TipPosition.fromLTRB(
-                    _left,
-                    _top,
-                    _right,
-                    _bottom,
-                  ),
+                  margin: widget.tooltip.tipContent.margin,
+                  position: absolutePosition,
                 ),
                 child: Stack(
                   fit: StackFit.passthrough,
@@ -327,7 +274,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                       content,
                     CloseObject(
                       widget.tooltip,
-                      direction: _popupDirection,
+                      direction: position.direction,
                       close: _close,
                     ),
                   ],
