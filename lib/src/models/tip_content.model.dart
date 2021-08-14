@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_tooltip/src/public_enums.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
 class TipContent {

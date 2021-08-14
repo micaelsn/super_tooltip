@@ -2,8 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-import 'enums.dart';
+import 'package:super_tooltip/src/private_enums.dart';
 
 class ShapeOverlay extends ShapeBorder {
   ShapeOverlay(

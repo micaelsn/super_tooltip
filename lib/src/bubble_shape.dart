@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'enums.dart';
+import 'public_enums.dart';
 import 'models/arrow_decoration.model.dart';
 import 'models/border_decoration.model.dart';
 import 'models/tip_position.model.dart';

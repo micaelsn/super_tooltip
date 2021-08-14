@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:super_tooltip/src/models/tip_constraints.model.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
-import 'enums.dart';
+import 'public_enums.dart';
 
 class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
   PopupBalloonLayoutDelegate({
