@@ -10,16 +10,6 @@ enum ClosePosition {
   outside,
 }
 
-extension CloseButtonPositionExtension on ClosePosition {
-  bool get isInside => this == ClosePosition.inside;
-  bool get isOutside => this == ClosePosition.outside;
-}
-
-enum ClipAreaShape {
-  oval,
-  rectangle,
-}
-
 enum SnapAxis {
   /// If [vertical], the bigger free space above or below the target will be
   /// covered completely by the ToolTip

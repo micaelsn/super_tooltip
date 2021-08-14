@@ -1,0 +1,4 @@
+enum ClipAreaShape {
+  oval,
+  rectangle,
+}
