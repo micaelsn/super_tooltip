@@ -18,19 +18,6 @@ void main() {
           expect(tipPosition.snapsHorizontal, isTrue);
         },
       );
-
-      test(
-        'should return true when left & right are 0',
-        () {
-          // set up
-          const tipPosition = TipPosition(
-            left: 0,
-            right: 0,
-          );
-          // assert
-          expect(tipPosition.snapsHorizontal, isTrue);
-        },
-      );
     },
   );
 }
