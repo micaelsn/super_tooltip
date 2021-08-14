@@ -14,7 +14,6 @@ class SuperTooltip {
     required this.tipContent,
     this.onClose,
     this.constraints,
-    this.margin = 16.0,
     this.closeTipObject = const CloseTipObject.inside(),
     this.elevation = 1,
     this.borderDecoration,
@@ -31,7 +30,6 @@ class SuperTooltip {
     required this.tipContent, // The contents of the tooltip.
     this.onClose,
     this.constraints,
-    this.margin = 16.0,
     this.closeTipObject = const CloseTipObject.inside(),
     this.boxShadow,
     this.borderDecoration,
@@ -53,9 +51,6 @@ class SuperTooltip {
   /// [constraints] optional size constraints.
   /// If a constraint is not set the size will ajust to the content
   final TipConstraints? constraints;
-
-  /// The minium padding from the Tooltip to the screen limits
-  final double margin;
 
   /// [boxShadow] defines the tooltip shadow
   final List<BoxShadow>? boxShadow;
