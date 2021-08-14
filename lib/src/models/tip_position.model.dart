@@ -1,3 +1,4 @@
+import 'package:super_tooltip/src/extensions.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
 class TipPosition {
@@ -7,6 +8,7 @@ class TipPosition {
     this.top,
     this.right,
     this.bottom,
+    this.hasPreference = false,
     this.snapTo = SnapAxis.none,
     this.direction = TipDirection.down,
   });
@@ -17,6 +19,7 @@ class TipPosition {
     this.right,
     this.bottom,
   })  : snapTo = SnapAxis.none,
+        hasPreference = false,
         direction = TipDirection.down;
 
   const TipPosition.fromLTRB(
@@ -25,6 +28,7 @@ class TipPosition {
     this.right,
     this.bottom,
   )   : snapTo = SnapAxis.none,
+        hasPreference = false,
         direction = TipDirection.down;
 
   const TipPosition.snap(this.snapTo)
@@ -32,13 +36,23 @@ class TipPosition {
         top = null,
         left = null,
         right = null,
+        hasPreference = false,
         direction = TipDirection.down;
+
+  TipPosition.snapSide(this.direction)
+      : bottom = null,
+        top = null,
+        left = null,
+        right = null,
+        hasPreference = true,
+        snapTo = direction.snap;
 
   const TipPosition.side(this.direction)
       : bottom = null,
         top = null,
         left = null,
         right = null,
+        hasPreference = false,
         snapTo = SnapAxis.none;
 
   final double? top;
@@ -46,6 +60,7 @@ class TipPosition {
   final double? bottom;
   final double? right;
   final SnapAxis snapTo;
+  final bool hasPreference;
 
   /// The direcion in which the tooltip should open
   final TipDirection direction;
