@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:super_tooltip/src/close_object.dart';
 import 'package:super_tooltip/src/models/tip_constraints.model.dart';
+import 'package:super_tooltip/src/super_tooltip_background.dart';
 
 import 'bubble_shape.dart';
-import 'enums.dart';
+import 'extensions.dart';
 import 'models/models.dart';
 import 'models/super_tooltip.model.dart';
 import 'pop_up_balloon_layout_delegate.dart';
-import 'shape_overlay.dart';
+import 'public_enums.dart';
 
 //TODO: Add a controller instead of using the method directly
 typedef TargetBuilder = Widget Function(BuildContext, ShowHandler);
@@ -165,34 +167,6 @@ class __SuperTooltipState extends State<_SuperTooltip> {
     await Future.delayed(_animatedDuration);
   }
 
-  EdgeInsets _getBalloonContainerMargin(TipDirection tipDirection) {
-    var top = 0.0;
-
-    if (widget.tooltip.closeTipObject.position?.isOutside ?? false)
-      top = widget.tooltip.closeTipObject.height + 5;
-
-    final distanceAway = widget.tooltip.arrowDecoration.distanceAway;
-
-    switch (tipDirection) {
-      case TipDirection.down:
-        return EdgeInsets.only(top: distanceAway);
-
-      case TipDirection.up:
-        return EdgeInsets.only(bottom: distanceAway, top: top);
-
-      case TipDirection.left:
-        return EdgeInsets.only(right: distanceAway, top: top);
-
-      case TipDirection.right:
-        return EdgeInsets.only(left: distanceAway, top: top);
-
-      default:
-        throw AssertionError(
-            'Unsupported TipDirection ${widget.tooltip.tipContent.position.direction}');
-      // return EdgeInsets.zero;
-    }
-  }
-
   void _close({bool updateVisibility = true}) async {
     if (updateVisibility) await _updateVisibility(0);
     widget.close();
@@ -200,17 +174,32 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
   @override
   Widget build(BuildContext context) {
-    final position = widget.tooltip.tipContent.position;
+    var position = widget.tooltip.tipContent.position;
     var _left = position.left,
         _right = position.right,
         _top = position.top,
         _bottom = position.bottom;
     var _popupDirection = position.direction;
+    var _contentRight = 0.0, _contentTop = 0.0;
+    var _wrapInSafeArea = false;
 
     /// Handling snap far away feature.
     if (position.snapsVertical) {
       _left = 0.0;
       _right = 0.0;
+      _contentRight = widget.tooltip.closeTipObject.width -
+          _popupDirection.getMargin(widget.tooltip).right -
+          8;
+      if (position.hasPreference) {
+        if (position.direction.isUp) {
+          _top = 0.0;
+          _popupDirection = TipDirection.up;
+        } else {
+          _bottom = 0.0;
+          _popupDirection = TipDirection.down;
+        }
+      } else
+      // check if top position is greater than bottom
       if ((widget.targetCenter.dy) >
           (widget.targetSize?.center(Offset.zero).dy ?? 0)) {
         _popupDirection = TipDirection.up;
@@ -219,23 +208,38 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         _popupDirection = TipDirection.down;
         _bottom = 0.0;
       }
-    }
-    // Only one of of them is possible, and vertical has higher priority.
-    else if (position.snapsHorizontal) {
+    } else if (position.snapsHorizontal) {
       _top = 0.0;
       _bottom = 0.0;
-      if (widget.targetCenter.dx <
-          (widget.targetSize?.center(Offset.zero).dx ?? 0)) {
-        _popupDirection = TipDirection.right;
-        _right = 0.0;
+      _wrapInSafeArea = true;
+      if (position.hasPreference) {
+        if (position.direction.isRight) {
+          _right = 0.0;
+          _popupDirection = TipDirection.right;
+        } else {
+          _left = 0.0;
+          _popupDirection = TipDirection.left;
+        }
       } else {
-        _popupDirection = TipDirection.left;
-        _left = 0.0;
+        if (widget.tooltip.closeTipObject.position?.isInside ?? false) {
+          _contentTop = widget.tooltip.closeTipObject.height;
+        }
+
+        // check if right position is greater than left
+        if (widget.targetCenter.dx <
+            (widget.targetSize?.center(Offset.zero).dx ?? 0)) {
+          _popupDirection = TipDirection.right;
+
+          _right = 0.0;
+        } else {
+          _popupDirection = TipDirection.left;
+          _left = 0.0;
+        }
       }
     }
 
     final content = Container(
-      margin: _getBalloonContainerMargin(_popupDirection),
+      margin: _popupDirection.getMargin(widget.tooltip),
       decoration: ShapeDecoration(
         color: widget.tooltip.tipContent.backgroundColor,
         shadows: widget.tooltip.boxShadow ??
@@ -258,12 +262,18 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         type: MaterialType.transparency,
         child: Padding(
           padding: (widget.tooltip.closeTipObject.position?.isInside ?? false)
-              ? EdgeInsets.only(
-                  right: widget.tooltip.closeTipObject.width -
-                      _getBalloonContainerMargin(_popupDirection).right -
-                      8)
+              ? EdgeInsets.fromLTRB(
+                  0,
+                  _contentTop,
+                  _contentRight,
+                  0,
+                )
               : EdgeInsets.zero,
-          child: widget.tooltip.tipContent.child,
+          child: _wrapInSafeArea
+              ? SafeArea(
+                  child: widget.tooltip.tipContent.child,
+                )
+              : widget.tooltip.tipContent.child,
         ),
       ),
     );
@@ -315,82 +325,10 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                       Positioned.fill(child: content)
                     else
                       content,
-                    Builder(
-                      builder: (context) {
-                        final closePosition =
-                            widget.tooltip.closeTipObject.position;
-
-                        if (closePosition == null)
-                          return const SizedBox(height: 0);
-
-                        double? right;
-                        double? top;
-
-                        switch (_popupDirection) {
-                          //
-                          // LEFT: -------------------------------------
-                          case TipDirection.left:
-                            right =
-                                widget.tooltip.arrowDecoration.distanceAway +
-                                    3.0;
-                            if (closePosition.isInside) {
-                              top = 2.0;
-                            } else if (closePosition.isOutside) {
-                              top = 0.0;
-                            } else
-                              throw AssertionError(closePosition);
-                            break;
-
-                          // RIGHT/UP: ---------------------------------
-                          case TipDirection.right:
-                          case TipDirection.up:
-                            right = 5.0;
-                            if (closePosition.isInside) {
-                              top = 2.0;
-                            } else if (closePosition.isOutside) {
-                              top = 0.0;
-                            } else
-                              throw AssertionError(closePosition);
-                            break;
-
-                          // DOWN: -------------------------------------
-                          case TipDirection.down:
-                            // If this value gets negative the Shadow gets clipped. The problem occurs is arrowlength + arrowTipDistance
-                            // is smaller than _outSideCloseButtonPadding which would mean arrowLength would need to be increased if the button is ouside.
-                            right = 2.0;
-                            if (closePosition.isInside) {
-                              top =
-                                  widget.tooltip.arrowDecoration.distanceAway +
-                                      2.0;
-                            } else if (closePosition.isOutside) {
-                              top = -widget.tooltip.closeTipObject.height +
-                                  widget.tooltip.arrowDecoration.distanceAway -
-                                  2;
-                            } else
-                              throw AssertionError(closePosition);
-                            break;
-                        }
-
-                        return Positioned(
-                          right: right,
-                          top: top,
-                          child: GestureDetector(
-                            onTap: _close,
-                            child: AbsorbPointer(
-                              absorbing: true,
-                              child: SizedBox(
-                                height: widget.tooltip.closeTipObject.height,
-                                width: widget.tooltip.closeTipObject.width,
-                                child: widget.tooltip.closeTipObject.child ??
-                                    const PreferredSize(
-                                      preferredSize: Size.fromHeight(35),
-                                      child: Icon(Icons.close),
-                                    ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                    CloseObject(
+                      widget.tooltip,
+                      direction: _popupDirection,
+                      close: _close,
                     ),
                   ],
                 ),
@@ -400,71 +338,5 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         ),
       ),
     );
-  }
-}
-
-class SuperTooltipBackground extends StatelessWidget {
-  const SuperTooltipBackground({
-    Key? key,
-    required this.targetCenter,
-    required this.background,
-    required this.close,
-  }) : super(key: key);
-
-  final Offset targetCenter;
-  final TipBackground background;
-  final OnCloseCallback close;
-
-  @override
-  Widget build(BuildContext context) {
-    late Widget backgroundContent;
-
-    final touchThrough = background.touchThrough;
-    final position = touchThrough?.position != null
-        ? touchThrough!.position!(targetCenter)
-        : targetCenter;
-
-    final shapeOverlay = ShapeOverlay(
-      touchThrough?.isCustom ?? false
-          ? touchThrough!.area
-          : Rect.fromCenter(
-              center: Offset(
-                position.dx,
-                position.dy,
-              ),
-              width: (touchThrough?.area.width ?? 0),
-              height: (touchThrough?.area.height ?? 0),
-            ),
-      touchThrough?.shape ?? ClipAreaShape.rectangle,
-      touchThrough?.borderRadius ?? 0,
-      background.outsideColor,
-    );
-    final backgroundDecoration =
-        DecoratedBox(decoration: ShapeDecoration(shape: shapeOverlay));
-
-    if (background.dismissible && background.absorbPointerEvents) {
-      backgroundContent = GestureDetector(
-        onTap: close,
-        child: backgroundDecoration,
-      );
-    } else if (background.dismissible && !background.absorbPointerEvents) {
-      backgroundContent = Listener(
-        behavior: HitTestBehavior.translucent,
-        onPointerDown: (event) {
-          if (!(shapeOverlay.getExclusion()?.contains(event.localPosition) ??
-              false)) {
-            close();
-          }
-        },
-        child: IgnorePointer(child: backgroundDecoration),
-      );
-    } else if (!background.dismissible && background.absorbPointerEvents) {
-      backgroundContent = backgroundDecoration;
-    } else if (!background.dismissible && !background.absorbPointerEvents) {
-      backgroundContent = IgnorePointer(child: backgroundDecoration);
-    } else {
-      backgroundContent = backgroundDecoration;
-    }
-    return backgroundContent;
   }
 }
