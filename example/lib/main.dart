@@ -64,9 +64,8 @@ class _TargetWidgetState extends State<TargetWidget> {
     return SuperTooltipBuilder(
       key: const Key('tooltip'),
       tooltip: SuperTooltip(
-        margin: 16,
         elevation: 8,
-        closeTipObject: const CloseTipObject.inside(),
+        closeTipObject: const CloseTipObject.outside(),
         arrowDecoration: const ArrowDecoration(
           distanceFromCenter: 16,
           baseWidth: 40,
@@ -80,9 +79,13 @@ class _TargetWidgetState extends State<TargetWidget> {
           absorbPointerEvents: false,
           touchThrough: TouchThrough.square(),
         ),
-        tipContent: const TipContent(
+        tipContent: TipContent(
+          // position: TipPosition.side(TipDirection.down),
+          // position: TipPosition.snap(SnapAxis.vertical),
+          position: TipPosition.snapSide(TipDirection.right),
+          // position: TipPosition.fromLTRB(30, 30, 30, 30),
           backgroundColor: Colors.pink,
-          child: Padding(
+          child: const Padding(
             padding: EdgeInsets.all(16),
             child: Text(
               's e d  d i a m  v o l u p t u a . A t  v e r o  e o s  e t  a c c u s a m  e t  j u s t o  d u o  d o l o r e s  e t  e a  r e b u m ',
