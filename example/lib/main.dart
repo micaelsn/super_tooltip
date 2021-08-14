@@ -3,6 +3,11 @@ import 'package:super_tooltip/super_tooltip.dart';
 
 void main() => runApp(MyApp());
 
+// TODO: play around with the close object. Allow position to be set.
+// override outside if tooltip is upside
+// make sure that the tooltip content has a border from the close object
+// add blur background to content
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
