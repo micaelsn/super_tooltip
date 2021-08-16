@@ -20,69 +20,78 @@ class CloseObject extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const extraPadding = 6.0;
     return Builder(
       builder: (context) {
-        final closePosition = tooltip.closeTipObject.position;
+        final closeObject = tooltip.closeTipObject;
+        final closePosition = closeObject.position;
 
         if (closePosition == null) return const SizedBox(height: 0);
 
         double? right, top;
-        var _wrapInSafeArea = false;
+        var _wrapInSafeArea = true;
 
         switch (direction) {
-          //
-          // LEFT: -------------------------------------
           case TipDirection.left:
-            _wrapInSafeArea = true;
-            right = tooltip.arrowDecoration.distanceAway + 3.0;
-            top = 12;
+            top = -closeObject.height + extraPadding + closeObject.margin.top;
+
             if (closePosition.isOutside) {
-              right -= direction.getMargin(tooltip).right;
-            } else
-              throw AssertionError(closePosition);
+              right = -extraPadding - closeObject.margin.left;
+            } else if (closePosition.isInside) {
+              final minDistance = tooltip.arrowDecoration.distanceAway;
+              right = minDistance +
+                  (minDistance - closeObject.width) +
+                  (extraPadding - 2) +
+                  closeObject.margin.right;
+            }
             break;
 
-          // RIGHT/UP: ---------------------------------
           case TipDirection.right:
-            _wrapInSafeArea = true;
-            right = 5.0;
-            if (closePosition.isInside) {
-              top = 2.0;
-            } else if (closePosition.isOutside) {
-              top = 0.0;
-            } else
-              throw AssertionError(closePosition);
+            right = closeObject.margin.right;
+
+            if (closePosition.isOutside) {
+              top = -(closeObject.height * 2) -
+                  -extraPadding -
+                  closeObject.margin.top;
+            } else if (closePosition.isInside) {
+              top = -closeObject.height + extraPadding + closeObject.margin.top;
+            }
             break;
           case TipDirection.up:
-            right = 5.0;
-            if (closePosition.isInside) {
-              top = 2.0;
-            } else if (closePosition.isOutside) {
-              top = 0.0;
-            } else
-              throw AssertionError(closePosition);
+            right = closeObject.margin.right;
+
+            if (closePosition.isOutside) {
+              top = (-closeObject.height + (extraPadding * 2)) -
+                  closeObject.margin.top;
+            } else if (closePosition.isInside) {
+              top = -closeObject.height + extraPadding + closeObject.margin.top;
+            }
             break;
 
           // DOWN: -------------------------------------
           case TipDirection.down:
             // If this value gets negative the Shadow gets clipped. The problem occurs is arrowlength + arrowTipDistance
             // is smaller than _outSideCloseButtonPadding which would mean arrowLength would need to be increased if the button is ouside.
-            right = 2.0;
+            right = closeObject.margin.right;
+            _wrapInSafeArea = false;
             if (closePosition.isInside) {
-              top = tooltip.arrowDecoration.distanceAway + 2.0;
+              top =
+                  tooltip.arrowDecoration.distanceAway + closeObject.margin.top;
             } else if (closePosition.isOutside) {
               top = -tooltip.closeTipObject.height +
                   tooltip.arrowDecoration.distanceAway -
-                  2;
-            } else
-              throw AssertionError(closePosition);
+                  closeObject.margin.bottom;
+            }
             break;
         }
 
-        final closeObject = SizedBox(
+        final closeWidget = SizedBox(
           height: tooltip.closeTipObject.height,
           width: tooltip.closeTipObject.width,
-          child: tooltip.closeTipObject.child ?? const Icon(Icons.close),
+          child: tooltip.closeTipObject.child ??
+              const Center(
+                child: Icon(Icons.close),
+              ),
         );
 
         return Positioned(
@@ -93,7 +102,7 @@ class CloseObject extends StatelessWidget {
             child: AbsorbPointer(
               absorbing: true,
               child:
-                  _wrapInSafeArea ? SafeArea(child: closeObject) : closeObject,
+                  _wrapInSafeArea ? SafeArea(child: closeWidget) : closeWidget,
             ),
           ),
         );
