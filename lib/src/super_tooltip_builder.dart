@@ -39,11 +39,12 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
   OverlayEntry? _overlayEntry;
 
   void _remove() async {
+    if (!_isShowing) return;
     if (widget.tooltip.onClose != null) {
       widget.tooltip.onClose!();
     }
-
-    _overlayEntry?.remove();
+    final entry = _overlayEntry;
+    if (entry != null) entry.remove();
 
     _isShowing = false;
   }
@@ -63,18 +64,19 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
   void _show(
     BuildContext targetContext, {
     OverlayState? overlay,
+
+    /// a key may be provided to override the default widget context
     GlobalKey? key,
   }) async {
-    if (key != null)
-      assert(key.currentWidget != null, 'The key must be assigned to a widget');
-    if (_isShowing) {
-      _remove();
-      _isShowing = false;
-      return;
-    }
     var _context = targetContext;
-    if (key != null && key.currentContext != null)
+    if (key != null) {
+      if (key.currentWidget != null) {
+        assert(false, 'The key must be assigned to a widget');
+        return;
+      }
       _context = key.currentContext!;
+    }
+    if (_isShowing) return;
 
     final renderBox = _context.findRenderObject() as RenderBox;
     final _overlay = overlay ??= Overlay.of(_context);
@@ -115,6 +117,8 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
   }
 }
 
+typedef OnCloseAnimated = void Function(Future<void>);
+
 class _SuperTooltip extends StatefulWidget {
   _SuperTooltip({
     Key? key,
@@ -150,7 +154,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
   @override
   void dispose() {
     // TODO: test dispose method and removing tooltip
-    _close(updateVisibility: false);
+    _close(updateVis: false);
     super.dispose();
   }
 
@@ -161,8 +165,8 @@ class __SuperTooltipState extends State<_SuperTooltip> {
     await Future.delayed(_animatedDuration);
   }
 
-  void _close({bool updateVisibility = true}) async {
-    if (updateVisibility) await _updateVisibility(0);
+  void _close({bool updateVis = true}) async {
+    if (updateVis) await _updateVisibility(0);
     widget.close();
   }
 
