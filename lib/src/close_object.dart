@@ -38,16 +38,12 @@ class CloseObject extends StatelessWidget {
               top = closeObject.margin.top;
             } else
               top = -closeObject.height + extraPadding + closeObject.margin.top;
-
-            if (closePosition.isOutside) {
-              right = -extraPadding - closeObject.margin.left;
-            } else {
-              final minDistance = tooltip.arrowDecoration.distanceAway;
-              right = minDistance +
-                  (minDistance - closeObject.width) +
-                  (extraPadding - 2) +
-                  closeObject.margin.right;
-            }
+            final minDistance = tooltip.arrowDecoration.distanceAway;
+            right = minDistance +
+                (minDistance - closeObject.width) +
+                (extraPadding - 2) +
+                closeObject.margin.right;
+            if (closePosition.isOutside) right += -closeObject.width + 1;
             break;
 
           case TipDirection.right:
@@ -88,7 +84,8 @@ class CloseObject extends StatelessWidget {
             } else {
               top = -tooltip.closeTipObject.height +
                   tooltip.arrowDecoration.distanceAway -
-                  closeObject.margin.bottom;
+                  closeObject.margin.bottom -
+                  1;
             }
             break;
         }
