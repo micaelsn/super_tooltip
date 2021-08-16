@@ -183,27 +183,22 @@ class __SuperTooltipState extends State<_SuperTooltip> {
       widget.targetSize,
     );
 
+    final margin = closeObject.margin;
     if (closeObject.position?.isInside ?? false) {
-      final margin = closeObject.margin;
-      var _contentRight = 0.0, _contentTop = closeObject.height;
+      var _contentRight = 0.0;
+      var _contentTop = closeObject.height + margin.top + margin.bottom;
 
-      if (relativePosition.hasSnaps) {
-        _contentTop += margin.bottom;
+      if (relativePosition.hasSnaps &&
+          relativePosition.hasPreference &&
+          absolutePosition.direction.isDown)
+        _contentTop = _contentTop - widget.tooltip.arrowDecoration.distanceAway;
 
-        /// Handling snap far away feature.
-        if (relativePosition.snapsVertical) {
-        } else if (relativePosition.snapsHorizontal) {
-          if (!relativePosition.hasPreference) {
-            if (closeObject.position?.isInside ?? false) {
-              _contentRight = closeObject.width;
-            }
-          }
-        }
-      } else {
-        _contentTop += margin.top + margin.bottom;
+      /// Handling snap far away feature.
+      if (relativePosition.snapsHorizontal &&
+          !relativePosition.hasPreference &&
+          (closeObject.position?.isInside ?? false)) {
+        _contentRight = closeObject.width;
       }
-
-      _contentTop += margin.top + margin.bottom;
 
       contentPadding = EdgeInsets.fromLTRB(
         0,
@@ -214,7 +209,8 @@ class __SuperTooltipState extends State<_SuperTooltip> {
     } else if (relativePosition.hasSnaps &&
         (absolutePosition.direction.isUp ||
             absolutePosition.direction.isRight)) {
-      contentPadding = EdgeInsets.only(top: closeObject.height);
+      contentPadding =
+          EdgeInsets.only(top: closeObject.height + margin.bottom + margin.top);
     }
 
     final content = Container(
@@ -242,6 +238,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
           child: Container(
             child: _wrapInSafeArea
                 ? SafeArea(
+                    top: !absolutePosition.direction.isDown,
                     child: widget.tooltip.tipContent.child,
                   )
                 : widget.tooltip.tipContent.child,

@@ -30,14 +30,18 @@ class CloseObject extends StatelessWidget {
 
         double? right, top;
         var _wrapInSafeArea = true;
+        final hasSnaps = tooltip.tipContent.position.hasSnaps;
 
         switch (direction) {
           case TipDirection.left:
-            top = -closeObject.height + extraPadding + closeObject.margin.top;
+            if (hasSnaps) {
+              top = closeObject.margin.top;
+            } else
+              top = -closeObject.height + extraPadding + closeObject.margin.top;
 
             if (closePosition.isOutside) {
               right = -extraPadding - closeObject.margin.left;
-            } else if (closePosition.isInside) {
+            } else {
               final minDistance = tooltip.arrowDecoration.distanceAway;
               right = minDistance +
                   (minDistance - closeObject.width) +
@@ -49,21 +53,25 @@ class CloseObject extends StatelessWidget {
           case TipDirection.right:
             right = closeObject.margin.right;
 
-            if (closePosition.isOutside) {
+            if (hasSnaps) {
+              top = closeObject.margin.top;
+            } else if (closePosition.isOutside) {
               top = -(closeObject.height * 2) -
                   -extraPadding -
                   closeObject.margin.top;
-            } else if (closePosition.isInside) {
+            } else {
               top = -closeObject.height + extraPadding + closeObject.margin.top;
             }
             break;
           case TipDirection.up:
             right = closeObject.margin.right;
 
-            if (closePosition.isOutside) {
+            if (hasSnaps) {
+              top = closeObject.margin.top;
+            } else if (closePosition.isOutside) {
               top = (-closeObject.height + (extraPadding * 2)) -
                   closeObject.margin.top;
-            } else if (closePosition.isInside) {
+            } else {
               top = -closeObject.height + extraPadding + closeObject.margin.top;
             }
             break;
@@ -77,7 +85,7 @@ class CloseObject extends StatelessWidget {
             if (closePosition.isInside) {
               top =
                   tooltip.arrowDecoration.distanceAway + closeObject.margin.top;
-            } else if (closePosition.isOutside) {
+            } else {
               top = -tooltip.closeTipObject.height +
                   tooltip.arrowDecoration.distanceAway -
                   closeObject.margin.bottom;
