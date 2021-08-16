@@ -36,18 +36,15 @@ class SuperTooltipBuilder extends StatefulWidget {
 }
 
 class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
-  final _overlays = <OverlayEntry>[];
+  OverlayEntry? _overlayEntry;
 
   void _remove() async {
     if (widget.tooltip.onClose != null) {
       widget.tooltip.onClose!();
     }
 
-    for (final overlay in _overlays) {
-      overlay.remove();
-    }
+    _overlayEntry?.remove();
 
-    _overlays.clear();
     _isShowing = false;
   }
 
@@ -87,16 +84,14 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
         renderBox.size.center(Offset.zero),
         ancestor: overlayRenderBox);
 
-    final _balloonOverlay = OverlayEntry(
+    final entry = _overlayEntry = OverlayEntry(
       builder: (context) => _superTooltip(
         _targetCenter,
         overlayRenderBox?.size,
       ),
     );
 
-    _overlays.add(_balloonOverlay);
-
-    _overlay.insertAll(_overlays);
+    _overlay.insert(entry);
     _isShowing = true;
   }
 
