@@ -3,10 +3,7 @@ import 'package:super_tooltip/super_tooltip.dart';
 
 void main() => runApp(MyApp());
 
-// TODO: play around with the close object. Allow position to be set.
-// override outside if tooltip is upside
-// make sure that the tooltip content has a border from the close object
-// add blur background to content
+// TODO: play around with the close object. Allow position (left, right, up, down) to be set.
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -70,7 +67,21 @@ class _TargetWidgetState extends State<TargetWidget> {
       key: const Key('tooltip'),
       tooltip: SuperTooltip(
         elevation: 8,
-        closeTipObject: const CloseTipObject.outside(),
+        // closeTipObject: CloseTipObject.outside(
+        closeTipObject: CloseTipObject.inside(
+          child: Container(
+            color: Colors.white,
+            child: const Icon(Icons.remove),
+          ),
+          margin: const EdgeInsets.only(
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+          ),
+          height: 100,
+          width: 100,
+        ),
         arrowDecoration: const ArrowDecoration(
           distanceFromCenter: 16,
           baseWidth: 40,
@@ -79,23 +90,29 @@ class _TargetWidgetState extends State<TargetWidget> {
         borderDecoration: const BorderDecoration(
           color: Colors.black,
           width: 1,
+          radius: 8,
         ),
         background: TipBackground(
           absorbPointerEvents: false,
           touchThrough: TouchThrough.square(),
         ),
-        tipContent: TipContent(
-          // position: TipPosition.side(TipDirection.down),
+        //TODO: fix the following items
+/*
+    left: snap & non-snap
+    bottom: snap (non-snap works)
+    top: non-snap (snap works)
+*/
+        tipContent: TipContent.blur(
+          // position: TipPosition.side(TipDirection.up),
+          position: TipPosition.snapSide(TipDirection.up),
           // position: TipPosition.snap(SnapAxis.vertical),
-          position: TipPosition.snapSide(TipDirection.right),
+
           // position: TipPosition.fromLTRB(30, 30, 30, 30),
-          backgroundColor: Colors.pink,
-          child: const Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              's e d  d i a m  v o l u p t u a . A t  v e r o  e o s  e t  a c c u s a m  e t  j u s t o  d u o  d o l o r e s  e t  e a  r e b u m ',
-              softWrap: true,
-            ),
+          backgroundColor: Colors.pink.withOpacity(.3),
+          child: const Text(
+            's e d  d i a m  v o l u p t u a . A t  v e r o  e o s  e t  a c c u s a m  e t  j u s t o  d u o  d o l o r e s  e t  e a  r e b u m '
+            's e d  d i a m  v o l u p t u a . A t  v e r o  e o s  e t  a c c u s a m  e t  j u s t o  d u o  d o l o r e s  e t  e a  r e b u m ',
+            softWrap: true,
           ),
         ),
       ),
