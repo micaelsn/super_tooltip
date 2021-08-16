@@ -68,25 +68,19 @@ extension TipDirectionExt on TipDirection {
     }
   }
 
-  EdgeInsets getMargin(SuperTooltip tip) {
-    var top = 0.0;
-    final distanceAway = tip.arrowDecoration.distanceAway;
+  EdgeInsets getMargin(double distanceAway) {
     switch (this) {
       case TipDirection.down:
-        // if (tip.closeTipObject.position?.isOutside ?? false)
-        //   top = tip.closeTipObject.height + 5;
         return EdgeInsets.only(top: distanceAway);
 
       case TipDirection.up:
-        if (tip.closeTipObject.position?.isOutside ?? false)
-          top = tip.closeTipObject.height + 5;
-        return EdgeInsets.only(bottom: distanceAway, top: top);
+        return EdgeInsets.only(bottom: distanceAway);
 
       case TipDirection.left:
-        return EdgeInsets.only(right: distanceAway, top: top);
+        return EdgeInsets.only(right: distanceAway);
 
       case TipDirection.right:
-        return EdgeInsets.only(left: distanceAway, top: top);
+        return EdgeInsets.only(left: distanceAway);
     }
   }
 }
