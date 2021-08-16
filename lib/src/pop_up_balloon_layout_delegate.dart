@@ -6,7 +6,7 @@ import 'package:super_tooltip/src/models/absolute_position.dart';
 import 'package:super_tooltip/src/models/tip_constraints.model.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
-import 'public_enums.dart';
+import 'models/enums/public_enums.dart';
 
 class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
   PopupBalloonLayoutDelegate({

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:super_tooltip/src/models/super_tooltip.model.dart';
-import 'package:super_tooltip/src/public_enums.dart';
+import 'package:super_tooltip/src/models/enums/public_enums.dart';
 import 'package:super_tooltip/src/extensions.dart';
 
-import 'public_enums.dart';
+import 'models/enums/public_enums.dart';
 
 class CloseObject extends StatelessWidget {
   const CloseObject(

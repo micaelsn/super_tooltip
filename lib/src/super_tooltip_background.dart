@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:super_tooltip/src/models/models.dart';
-import 'package:super_tooltip/src/private_enums.dart';
+import 'package:super_tooltip/src/models/enums/private_enums.dart';
 
 import 'models/super_tooltip.model.dart';
 import 'shape_overlay.dart';

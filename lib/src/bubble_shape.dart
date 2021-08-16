@@ -6,7 +6,7 @@ import 'package:super_tooltip/src/models/absolute_position.dart';
 
 import 'models/arrow_decoration.model.dart';
 import 'models/border_decoration.model.dart';
-import 'public_enums.dart';
+import 'models/enums/public_enums.dart';
 
 class BubbleShape extends ShapeBorder {
   BubbleShape({

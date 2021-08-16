@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:super_tooltip/src/private_enums.dart';
+import 'package:super_tooltip/src/models/enums/private_enums.dart';
 
 typedef TouchThroughPosition = Offset Function(Offset);
 
