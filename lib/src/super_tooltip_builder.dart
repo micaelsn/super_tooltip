@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:super_tooltip/src/close_object.dart';
@@ -213,7 +215,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
           EdgeInsets.only(top: closeObject.height + margin.bottom + margin.top);
     }
 
-    final content = Container(
+    Widget content = Container(
       margin: absolutePosition.direction
           .getMargin(widget.tooltip.arrowDecoration.distanceAway),
       decoration: ShapeDecoration(
@@ -246,6 +248,32 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         ),
       ),
     );
+
+    if (widget.tooltip.tipContent.blurBackground) {
+      final _content = widget.tooltip.tipContent;
+      content = Stack(
+        children: <Widget>[
+          Positioned.fill(
+            bottom: absolutePosition.direction
+                .getMargin(widget.tooltip.arrowDecoration.distanceAway)
+                .bottom,
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: _content.sigmaX,
+                  sigmaY: _content.sigmaY,
+                ),
+                child: Opacity(
+                  opacity: 0,
+                  child: content,
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(child: content)
+        ],
+      );
+    }
 
     // TODO: expose the animation to the public
     return AnimatedOpacity(
