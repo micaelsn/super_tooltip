@@ -86,11 +86,7 @@ class TipPosition {
     }
   }
 
-  AbsolutePosition getPosition(
-    Offset center,
-    Size? size, {
-    required TipDirection defaultDirection,
-  }) {
+  AbsolutePosition getPosition(Offset center, Size? size) {
     final absolute = AbsolutePosition(
       bottom: bottom(center, size),
       left: left(center, size),
@@ -99,6 +95,6 @@ class TipPosition {
     );
 
     if (absolute.snaps) return absolute;
-    return AbsolutePosition.fromDirection(defaultDirection);
+    return AbsolutePosition.fromDirection(direction);
   }
 }
