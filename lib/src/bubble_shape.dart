@@ -79,13 +79,13 @@ class BubbleShape extends ShapeBorder {
             radius: Radius.circular(topRightRadius), clockwise: false);
     }
 
-    topLeftRadius = position.hasTopLeftRadius ? 0.0 : _borderDecoration.radius;
+    topLeftRadius = position.hasTopLeftRadius ? _borderDecoration.radius : 0.0;
     topRightRadius =
-        position.hasTopRightRadius ? 0.0 : _borderDecoration.radius;
+        position.hasTopRightRadius ? _borderDecoration.radius : 0.0;
     bottomLeftRadius =
-        position.hasBottomLeftRadius ? 0.0 : _borderDecoration.radius;
+        position.hasBottomLeftRadius ? _borderDecoration.radius : 0.0;
     bottomRightRadius =
-        position.hasBottomRightRadius ? 0.0 : _borderDecoration.radius;
+        position.hasBottomRightRadius ? _borderDecoration.radius : 0.0;
 
     switch (position.direction) {
       // draws arrow pointing up
@@ -256,9 +256,6 @@ class BubbleShape extends ShapeBorder {
           // add bottom left corner
           ..arcToPoint(Offset(rect.left + bottomLeftRadius, rect.bottom),
               radius: Radius.circular(bottomLeftRadius), clockwise: false);
-
-      default:
-        throw AssertionError(position.direction);
     }
   }
 

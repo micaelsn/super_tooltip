@@ -28,10 +28,10 @@ class AbsolutePosition {
   final double? right;
   final double? bottom;
 
-  bool get hasBottomLeftRadius => left == 0 || bottom == 0;
-  bool get hasBottomRightRadius => right == 0 || bottom == 0;
-  bool get hasTopLeftRadius => left == 0 || top == 0;
-  bool get hasTopRightRadius => right == 0 || top == 0;
+  bool get hasBottomLeftRadius => !(left == 0 && bottom == 0);
+  bool get hasBottomRightRadius => !(right == 0 && bottom == 0);
+  bool get hasTopLeftRadius => !(left == 0 && top == 0);
+  bool get hasTopRightRadius => !(right == 0 && top == 0);
 
   bool get isRightSide => right == 0;
   bool get isLeftSide => left == 0;
