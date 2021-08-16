@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:super_tooltip/src/close_object.dart';
 import 'package:super_tooltip/src/models/tip_constraints.model.dart';
 import 'package:super_tooltip/src/super_tooltip_background.dart';
+import 'package:super_tooltip/super_tooltip.dart';
 
 import 'bubble_shape.dart';
 import 'extensions.dart';
@@ -172,32 +173,53 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
   @override
   Widget build(BuildContext context) {
-    final position = widget.tooltip.tipContent.position;
-    var _contentRight = 0.0, _contentTop = 0.0;
-    var _wrapInSafeArea = false;
+    final relativePosition = widget.tooltip.tipContent.position;
+    final closeObject = widget.tooltip.closeTipObject;
+    final _wrapInSafeArea = relativePosition.hasSnaps;
+    var contentPadding = EdgeInsets.zero;
 
-    /// Handling snap far away feature.
-    if (position.snapsVertical) {
-      _contentRight = widget.tooltip.closeTipObject.width -
-          position.direction.getMargin(widget.tooltip).right -
-          8;
-    } else if (position.snapsHorizontal) {
-      _wrapInSafeArea = true;
-      if (!position.hasPreference) {
-        if (widget.tooltip.closeTipObject.position?.isInside ?? false) {
-          _contentTop = widget.tooltip.closeTipObject.height;
-        }
-      }
-    }
-
-    final absolutePosition = position.getPosition(
+    final absolutePosition = relativePosition.getPosition(
       widget.targetCenter,
       widget.targetSize,
-      defaultDirection: position.direction,
     );
 
+    if (closeObject.position?.isInside ?? false) {
+      final margin = closeObject.margin;
+      var _contentRight = 0.0, _contentTop = closeObject.height;
+
+      if (relativePosition.hasSnaps) {
+        _contentTop += margin.bottom;
+
+        /// Handling snap far away feature.
+        if (relativePosition.snapsVertical) {
+        } else if (relativePosition.snapsHorizontal) {
+          if (!relativePosition.hasPreference) {
+            if (closeObject.position?.isInside ?? false) {
+              _contentRight = closeObject.width;
+            }
+          }
+        }
+      } else {
+        _contentTop += margin.top + margin.bottom;
+      }
+
+      _contentTop += margin.top + margin.bottom;
+
+      contentPadding = EdgeInsets.fromLTRB(
+        0,
+        _contentTop,
+        _contentRight,
+        0,
+      );
+    } else if (relativePosition.hasSnaps &&
+        (absolutePosition.direction.isUp ||
+            absolutePosition.direction.isRight)) {
+      contentPadding = EdgeInsets.only(top: closeObject.height);
+    }
+
     final content = Container(
-      margin: absolutePosition.direction.getMargin(widget.tooltip),
+      margin: absolutePosition.direction
+          .getMargin(widget.tooltip.arrowDecoration.distanceAway),
       decoration: ShapeDecoration(
         color: widget.tooltip.tipContent.backgroundColor,
         shadows: widget.tooltip.boxShadow ??
@@ -212,20 +234,18 @@ class __SuperTooltipState extends State<_SuperTooltip> {
       ),
       child: Material(
         type: MaterialType.transparency,
+        borderRadius:
+            BorderRadius.circular(widget.tooltip.borderDecoration?.radius ?? 0),
+        clipBehavior: Clip.hardEdge,
         child: Padding(
-          padding: (widget.tooltip.closeTipObject.position?.isInside ?? false)
-              ? EdgeInsets.fromLTRB(
-                  0,
-                  _contentTop,
-                  _contentRight,
-                  0,
-                )
-              : EdgeInsets.zero,
-          child: _wrapInSafeArea
-              ? SafeArea(
-                  child: widget.tooltip.tipContent.child,
-                )
-              : widget.tooltip.tipContent.child,
+          padding: contentPadding,
+          child: Container(
+            child: _wrapInSafeArea
+                ? SafeArea(
+                    child: widget.tooltip.tipContent.child,
+                  )
+                : widget.tooltip.tipContent.child,
+          ),
         ),
       ),
     );
@@ -252,11 +272,11 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                   targetCenter: widget.targetCenter,
                   tipConstraints: TipConstraints(
                     minWidth: widget.tooltip.constraints?.minWidth,
-                    maxWidth: position.snapsHorizontal
+                    maxWidth: relativePosition.snapsHorizontal
                         ? null
                         : widget.tooltip.constraints?.maxWidth,
                     minHeight: widget.tooltip.constraints?.minHeight,
-                    maxHeight: position.snapsVertical
+                    maxHeight: relativePosition.snapsVertical
                         ? null
                         : widget.tooltip.constraints?.maxHeight,
                   ),
@@ -267,13 +287,13 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                   fit: StackFit.passthrough,
                   clipBehavior: Clip.none,
                   children: [
-                    if (position.hasSnaps)
+                    if (relativePosition.hasSnaps)
                       Positioned.fill(child: content)
                     else
                       content,
                     CloseObject(
                       widget.tooltip,
-                      direction: position.direction,
+                      direction: absolutePosition.direction,
                       close: _close,
                     ),
                   ],
