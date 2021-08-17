@@ -30,22 +30,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.red,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Spacer(),
-          Container(
-            width: 100.0,
-            height: 100.0,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue,
-            ),
+      body: ListView(
+        children: List.generate(
+          20,
+          (index) => Column(
+            children: <Widget>[
+              const SizedBox(height: 64),
+              const Center(child: TargetWidget()),
+            ],
           ),
-          const Spacer(),
-          const Center(child: TargetWidget()),
-          const Spacer(),
-        ],
+        ),
       ),
     );
   }
@@ -67,9 +61,13 @@ class _TargetWidgetState extends State<TargetWidget> {
         elevation: 8,
         // closeTipObject: CloseTipObject.inside(
         closeTipObject: CloseTipObject.outside(
-          child: Container(
-            color: Colors.white,
-            child: const Icon(Icons.remove),
+          builder: (context, close) => GestureDetector(
+            onTap: close,
+            child: Container(
+              color: Colors.white,
+              alignment: Alignment.center,
+              child: const Icon(Icons.remove),
+            ),
           ),
           margin: const EdgeInsets.only(
             left: 0,
@@ -90,10 +88,10 @@ class _TargetWidgetState extends State<TargetWidget> {
           color: Colors.black,
           width: 1,
         ),
-        background: TipBackground(
-          absorbPointerEvents: false,
-          touchThrough: TouchThrough.square(),
-        ),
+        // background: TipBackground(
+        //   absorbPointerEvents: false,
+        //   touchThrough: TouchThrough.square(),
+        // ),
         tipContent: const TipContent(
           position: TipPosition.side(TipDirection.left),
           // position: TipPosition.snapSide(TipDirection.left),
@@ -108,7 +106,7 @@ class _TargetWidgetState extends State<TargetWidget> {
           ),
         ),
       ),
-      targetBuilder: (context, show) {
+      targetBuilder: (context, show, remove) {
         return GestureDetector(
           onTap: () {
             show();
