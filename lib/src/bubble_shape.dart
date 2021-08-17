@@ -103,11 +103,11 @@ class BubbleShape extends ShapeBorder {
               rect.top)
           // draw to arrow tip
           ..lineTo(targetCenter.dx + _arrowDecoration.tipRadius,
-              targetCenter.dy + _arrowDecoration.distanceFromCenter)
+              rect.top - _arrowDecoration.height)
           // add to arrow tip radius
           ..arcToPoint(
             Offset(targetCenter.dx - _arrowDecoration.tipRadius,
-                targetCenter.dy + _arrowDecoration.distanceFromCenter),
+                rect.top - _arrowDecoration.height),
             clockwise: false,
             radius: Radius.circular(_arrowDecoration.tipRadius * 1.5),
           )
@@ -149,11 +149,11 @@ class BubbleShape extends ShapeBorder {
               rect.bottom)
           // draw to arrow tip
           ..lineTo(targetCenter.dx + _arrowDecoration.tipRadius,
-              targetCenter.dy - _arrowDecoration.distanceFromCenter)
+              rect.bottom + _arrowDecoration.height)
           // add to arrow tip radius
           ..arcToPoint(
             Offset(targetCenter.dx - _arrowDecoration.tipRadius,
-                targetCenter.dy - _arrowDecoration.distanceFromCenter),
+                rect.bottom + _arrowDecoration.height),
             clockwise: true,
             radius: Radius.circular(_arrowDecoration.tipRadius * 1.5),
           )
@@ -192,11 +192,11 @@ class BubbleShape extends ShapeBorder {
                           _arrowDecoration.baseWidth),
                   rect.top + topRightRadius))
           // draw to arrow tip
-          ..lineTo(targetCenter.dx - _arrowDecoration.distanceFromCenter,
+          ..lineTo(rect.right + _arrowDecoration.height,
               targetCenter.dy - _arrowDecoration.tipRadius)
           // add to arrow tip radius
           ..arcToPoint(
-            Offset(targetCenter.dx - _arrowDecoration.distanceFromCenter,
+            Offset(rect.right + _arrowDecoration.height,
                 targetCenter.dy + _arrowDecoration.tipRadius),
             clockwise: true,
             radius: Radius.circular(_arrowDecoration.tipRadius * 1.5),
@@ -237,11 +237,11 @@ class BubbleShape extends ShapeBorder {
                   rect.top + topLeftRadius))
 
           // draw to arrow tip
-          ..lineTo(targetCenter.dx + _arrowDecoration.distanceFromCenter,
+          ..lineTo(rect.left - _arrowDecoration.height,
               targetCenter.dy - _arrowDecoration.tipRadius)
           // add to arrow tip radius
           ..arcToPoint(
-            Offset(targetCenter.dx + _arrowDecoration.distanceFromCenter,
+            Offset(rect.left - _arrowDecoration.height,
                 targetCenter.dy + _arrowDecoration.tipRadius),
             clockwise: false,
             radius: Radius.circular(_arrowDecoration.tipRadius * 1.5),
@@ -259,16 +259,8 @@ class BubbleShape extends ShapeBorder {
     }
   }
 
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
-    // adds a border
-    var paint = Paint()
-      ..color = _borderDecoration.color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = _borderDecoration.width;
-
-    canvas.drawPath(getOuterPath(rect), paint);
-    paint = Paint()
+  void _hideBorder(Canvas canvas, Rect rect) {
+    final paint = Paint()
       ..color = backgroundColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = _borderDecoration.width;
@@ -284,10 +276,11 @@ class BubbleShape extends ShapeBorder {
             paint);
       } else {
         canvas.drawPath(
-            Path()
-              ..moveTo(rect.right, rect.top + _borderDecoration.width / 2)
-              ..lineTo(rect.right, rect.bottom - _borderDecoration.width / 2),
-            paint);
+          Path()
+            ..moveTo(rect.right, rect.top + _borderDecoration.width / 2)
+            ..lineTo(rect.right, rect.bottom - _borderDecoration.width / 2),
+          paint,
+        );
       }
     }
     if (position.isLeftSide) {
@@ -335,6 +328,25 @@ class BubbleShape extends ShapeBorder {
             paint);
       }
     }
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    // adds a border
+    final borderPaint = Paint()
+      ..color = _borderDecoration.color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _borderDecoration.width;
+
+    final backgroundPaint = Paint()
+      ..color = backgroundColor
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.fill;
+
+    final clip = getOuterPath(rect);
+
+    canvas..drawPath(clip, backgroundPaint)..drawPath(clip, borderPaint);
+    if (position.snaps) _hideBorder(canvas, rect);
   }
 
   @override
