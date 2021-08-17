@@ -11,6 +11,12 @@ class ArrowDecoration {
     this.tipRadius = 2,
   });
 
+  const ArrowDecoration.none()
+      : baseWidth = 0,
+        height = 0,
+        distanceFromCenter = 0,
+        tipRadius = 0;
+
   final double baseWidth;
   final double height;
   final double distanceFromCenter;
