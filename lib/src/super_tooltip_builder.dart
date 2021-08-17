@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:super_tooltip/src/bubble_shape.dart';
 import 'package:super_tooltip/src/close_object.dart';
 import 'package:super_tooltip/src/models/tip_constraints.model.dart';
 import 'package:super_tooltip/src/super_tooltip_background.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
-import 'bubble_shape.dart';
 import 'extensions.dart';
 import 'models/models.dart';
 import 'models/super_tooltip.model.dart';
