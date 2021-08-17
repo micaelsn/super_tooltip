@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:super_tooltip/src/models/super_tooltip.model.dart';
-import 'package:super_tooltip/src/models/enums/public_enums.dart';
 import 'package:super_tooltip/src/extensions.dart';
+import 'package:super_tooltip/src/models/enums/public_enums.dart';
+import 'package:super_tooltip/src/models/super_tooltip.model.dart';
 
 import 'models/enums/public_enums.dart';
 
@@ -20,7 +20,6 @@ class CloseObject extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const extraPadding = 6.0;
     return Builder(
       builder: (context) {
         final closeObject = tooltip.closeTipObject;
@@ -33,7 +32,8 @@ class CloseObject extends StatelessWidget {
         double? x, y;
         var _wrapInSafeArea = true;
         final hasSnaps = tooltip.tipContent.position.hasSnaps;
-        final minDistance = tooltip.arrowDecoration.distanceAway;
+        final posMinDistance = tooltip.arrowDecoration.distanceAway + 1;
+        final negMinDistance = tooltip.arrowDecoration.distanceAway - 1;
 
         switch (direction) {
           case TipDirection.left:
@@ -41,19 +41,25 @@ class CloseObject extends StatelessWidget {
               y = closeObject.margin.top;
             } else {
               _wrapInSafeArea = false;
-              y = closeObject.margin.top;
             }
 
             closePositionHandler(
               closePosition,
               inside: () {
-                x = minDistance + closeObject.margin.left;
+                if (!hasSnaps) {
+                  y = closeObject.margin.top + 1;
+                }
+                x = posMinDistance + closeObject.margin.left;
               },
               outside: () {
-                x = minDistance -
-                    closeObject.width -
-                    1 -
-                    closeObject.margin.left;
+                if (hasSnaps) {
+                  x = negMinDistance -
+                      closeObject.width -
+                      closeObject.margin.left;
+                } else {
+                  y = -closeObject.margin.bottom - closeObject.height - 1;
+                  x = posMinDistance + closeObject.margin.left;
+                }
               },
             );
 
@@ -61,33 +67,40 @@ class CloseObject extends StatelessWidget {
 
           case TipDirection.right:
             x = closeObject.margin.right;
+            if (hasSnaps) {
+              y = closeObject.margin.top;
+            } else {
+              _wrapInSafeArea = false;
+
+              closePositionHandler(
+                closePosition,
+                inside: () {
+                  y = closeObject.margin.top;
+                },
+                outside: () {
+                  y = -closeObject.margin.bottom - closeObject.height;
+                },
+              );
+            }
+
+            break;
+          case TipDirection.up:
+            x = closeObject.margin.right + 1;
 
             if (hasSnaps) {
               y = closeObject.margin.top;
-            } else if (closePosition.isOutside) {
-              y = -(closeObject.height * 2) -
-                  -extraPadding -
-                  closeObject.margin.top;
             } else {
-              y = -closeObject.height + extraPadding + closeObject.margin.top;
+              _wrapInSafeArea = false;
+              closePositionHandler(
+                closePosition,
+                inside: () {
+                  y = closeObject.margin.top;
+                },
+                outside: () {
+                  y = -closeObject.margin.bottom - closeObject.height - 1;
+                },
+              );
             }
-            break;
-          case TipDirection.up:
-            x = closeObject.margin.right;
-            if (hasSnaps) {
-              y = closeObject.margin.top;
-            }
-            closePositionHandler(
-              closePosition,
-              inside: () {
-                y = -minDistance + closeObject.margin.top;
-              },
-              outside: () {
-                y = (-closeObject.height + (extraPadding * 2)) -
-                    closeObject.margin.top;
-              },
-            );
-            // y = 0;
 
             break;
 
@@ -95,16 +108,21 @@ class CloseObject extends StatelessWidget {
           case TipDirection.down:
             // If this value gets negative the Shadow gets clipped. The problem occurs is arrowlength + arrowTipDistance
             // is smaller than _outSideCloseButtonPadding which would mean arrowLength would need to be increased if the button is ouside.
-            x = closeObject.margin.right;
+            x = closeObject.margin.right + 1;
             _wrapInSafeArea = false;
-            if (closePosition.isInside) {
-              y = tooltip.arrowDecoration.distanceAway + closeObject.margin.top;
-            } else {
-              y = -tooltip.closeTipObject.height +
-                  tooltip.arrowDecoration.distanceAway -
-                  closeObject.margin.bottom -
-                  1;
-            }
+            closePositionHandler(
+              closePosition,
+              inside: () {
+                y = tooltip.arrowDecoration.distanceAway +
+                    closeObject.margin.top;
+              },
+              outside: () {
+                y = -tooltip.closeTipObject.height +
+                    tooltip.arrowDecoration.distanceAway -
+                    closeObject.margin.bottom -
+                    1;
+              },
+            );
             break;
         }
 
