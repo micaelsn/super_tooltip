@@ -215,9 +215,28 @@ class __SuperTooltipState extends State<_SuperTooltip> {
           EdgeInsets.only(top: closeObject.height + margin.bottom + margin.top);
     }
 
-    Widget content = Container(
+    Widget content = Material(
+      type: MaterialType.transparency,
+      borderRadius:
+          BorderRadius.circular(widget.tooltip.borderDecoration?.radius ?? 0),
+      clipBehavior: Clip.hardEdge,
+      child: Padding(
+        padding: contentPadding,
+        child: Container(
+          child: _wrapInSafeArea
+              ? SafeArea(
+                  top: !absolutePosition.direction.isDown,
+                  child: widget.tooltip.tipContent.child,
+                )
+              : widget.tooltip.tipContent.child,
+        ),
+      ),
+    );
+    final _content = widget.tooltip.tipContent;
+    content = Container(
       margin: absolutePosition.direction
           .getMargin(widget.tooltip.arrowDecoration.distanceAway),
+      clipBehavior: Clip.hardEdge,
       decoration: ShapeDecoration(
         color: widget.tooltip.tipContent.backgroundColor,
         shadows: widget.tooltip.boxShadow ??
@@ -230,50 +249,16 @@ class __SuperTooltipState extends State<_SuperTooltip> {
           position: absolutePosition,
         ),
       ),
-      child: Material(
-        type: MaterialType.transparency,
-        borderRadius:
-            BorderRadius.circular(widget.tooltip.borderDecoration?.radius ?? 0),
-        clipBehavior: Clip.hardEdge,
-        child: Padding(
-          padding: contentPadding,
-          child: Container(
-            child: _wrapInSafeArea
-                ? SafeArea(
-                    top: !absolutePosition.direction.isDown,
-                    child: widget.tooltip.tipContent.child,
-                  )
-                : widget.tooltip.tipContent.child,
-          ),
-        ),
-      ),
-    );
-
-    if (widget.tooltip.tipContent.blurBackground) {
-      final _content = widget.tooltip.tipContent;
-      content = Stack(
-        children: <Widget>[
-          Positioned.fill(
-            bottom: absolutePosition.direction
-                .getMargin(widget.tooltip.arrowDecoration.distanceAway)
-                .bottom,
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: _content.sigmaX,
-                  sigmaY: _content.sigmaY,
-                ),
-                child: Opacity(
-                  opacity: 0,
-                  child: content,
-                ),
+      child: _content.blurBackground
+          ? BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: _content.sigmaX,
+                sigmaY: _content.sigmaY,
               ),
-            ),
-          ),
-          Positioned.fill(child: content)
-        ],
-      );
-    }
+              child: content,
+            )
+          : content,
+    );
 
     // TODO: expose the animation to the public
     return AnimatedOpacity(
