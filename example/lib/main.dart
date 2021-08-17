@@ -3,8 +3,6 @@ import 'package:super_tooltip/super_tooltip.dart';
 
 void main() => runApp(MyApp());
 
-// TODO: play around with the close object. Allow position (left, right, up, down) to be set.
-
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -67,8 +65,8 @@ class _TargetWidgetState extends State<TargetWidget> {
       key: const Key('tooltip'),
       tooltip: SuperTooltip(
         elevation: 8,
-        // closeTipObject: CloseTipObject.outside(
-        closeTipObject: CloseTipObject.inside(
+        // closeTipObject: CloseTipObject.inside(
+        closeTipObject: CloseTipObject.outside(
           child: Container(
             color: Colors.white,
             child: const Icon(Icons.remove),
@@ -83,33 +81,27 @@ class _TargetWidgetState extends State<TargetWidget> {
           width: 100,
         ),
         arrowDecoration: const ArrowDecoration(
-          distanceFromCenter: 16,
+          distanceFromCenter: 0,
           baseWidth: 40,
-          height: 30,
+          height: 20,
+          tipRadius: 0,
         ),
         borderDecoration: const BorderDecoration(
           color: Colors.black,
           width: 1,
-          radius: 8,
         ),
         background: TipBackground(
           absorbPointerEvents: false,
           touchThrough: TouchThrough.square(),
         ),
-        //TODO: fix the following items
-/*
-    left: snap & non-snap
-    bottom: snap (non-snap works)
-    top: non-snap (snap works)
-*/
-        tipContent: TipContent.blur(
-          // position: TipPosition.side(TipDirection.up),
-          position: TipPosition.snapSide(TipDirection.up),
+        tipContent: const TipContent(
+          position: TipPosition.side(TipDirection.left),
+          // position: TipPosition.snapSide(TipDirection.left),
           // position: TipPosition.snap(SnapAxis.vertical),
 
           // position: TipPosition.fromLTRB(30, 30, 30, 30),
-          backgroundColor: Colors.pink.withOpacity(.3),
-          child: const Text(
+          backgroundColor: Colors.pink,
+          child: Text(
             's e d  d i a m  v o l u p t u a . A t  v e r o  e o s  e t  a c c u s a m  e t  j u s t o  d u o  d o l o r e s  e t  e a  r e b u m '
             's e d  d i a m  v o l u p t u a . A t  v e r o  e o s  e t  a c c u s a m  e t  j u s t o  d u o  d o l o r e s  e t  e a  r e b u m ',
             softWrap: true,
@@ -127,6 +119,15 @@ class _TargetWidgetState extends State<TargetWidget> {
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.blue,
+            ),
+            alignment: Alignment.center,
+            child: Container(
+              width: 80.0,
+              height: 80.0,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black,
+              ),
             ),
           ),
         );
