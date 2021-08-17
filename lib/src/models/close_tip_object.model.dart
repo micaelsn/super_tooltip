@@ -5,21 +5,21 @@ class CloseTipObject {
   // ignore: unused_element
   const CloseTipObject._(
     this.position,
-    this.child,
+    this.builder,
     this.height,
     this.width,
     this.margin,
   );
 
   const CloseTipObject.inside({
-    this.child,
+    this.builder,
     this.height = 32,
     this.width = 32,
     this.margin = const EdgeInsets.all(4),
   }) : position = ClosePosition.inside;
 
   const CloseTipObject.outside({
-    this.child,
+    this.builder,
     this.height = 32,
     this.width = 32,
     this.margin = const EdgeInsets.all(4),
@@ -27,7 +27,7 @@ class CloseTipObject {
 
   const CloseTipObject.none()
       : position = ClosePosition.none,
-        child = null,
+        builder = null,
         margin = const EdgeInsets.all(4),
         height = 0,
         width = 0;
@@ -38,7 +38,7 @@ class CloseTipObject {
   /// The widget that is used to close the Tooltip
   ///
   /// defaults to `Icon(Icons.close)`
-  final Widget? child;
+  final Widget Function(BuildContext, TipCallback)? builder;
 
   /// The height of the close button
   ///

@@ -4,25 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:super_tooltip/src/bubble_shape.dart';
 import 'package:super_tooltip/src/close_object.dart';
-import 'package:super_tooltip/src/models/tip_constraints.model.dart';
 import 'package:super_tooltip/src/super_tooltip_background.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
 import 'extensions.dart';
-import 'models/models.dart';
 import 'models/super_tooltip.model.dart';
 import 'pop_up_balloon_layout_delegate.dart';
 
-//TODO: Add a controller instead of using the method directly
-typedef TargetBuilder = Widget Function(BuildContext, ShowHandler);
+typedef TipCallback = void Function();
+
+typedef TargetBuilder = Widget Function(BuildContext, ShowHandler, TipCallback);
 
 /// provide the key if you wish to override the default widget context
 typedef ShowHandler = void Function({
   OverlayState? overlay,
   GlobalKey? key,
 });
-
-var _isShowing = false;
 
 class SuperTooltipBuilder extends StatefulWidget {
   SuperTooltipBuilder({
@@ -40,6 +37,14 @@ class SuperTooltipBuilder extends StatefulWidget {
 
 class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
   OverlayEntry? _overlayEntry;
+  late final LayerLink _layerLink;
+  var _isShowing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _layerLink = LayerLink();
+  }
 
   void _remove() async {
     if (!_isShowing) return;
@@ -52,17 +57,16 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
     _isShowing = false;
   }
 
-  _SuperTooltip _superTooltip(
+  Widget _superTooltip(
     Offset targetCenter,
     Size? size,
-  ) {
-    return _SuperTooltip(
-      tooltip: widget.tooltip,
-      targetCenter: targetCenter,
-      targetSize: size,
-      close: _remove,
-    );
-  }
+  ) =>
+      _SuperTooltip(
+        tooltip: widget.tooltip,
+        targetCenter: targetCenter,
+        targetSize: size,
+        close: _remove,
+      );
 
   void _show(
     BuildContext targetContext, {
@@ -88,11 +92,22 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
     final _targetCenter = renderBox.localToGlobal(
         renderBox.size.center(Offset.zero),
         ancestor: overlayRenderBox);
+    final size = renderBox.size;
+
+    final offsetToTarget = Offset(
+      -_targetCenter.dx + size.width / 2,
+      -_targetCenter.dy + size.height / 2,
+    );
 
     final entry = _overlayEntry = OverlayEntry(
-      builder: (context) => _superTooltip(
-        _targetCenter,
-        overlayRenderBox?.size,
+      builder: (context) => CompositedTransformFollower(
+        link: _layerLink,
+        showWhenUnlinked: false,
+        offset: offsetToTarget,
+        child: _superTooltip(
+          _targetCenter,
+          size,
+        ),
       ),
     );
 
@@ -112,9 +127,13 @@ class _SuperTooltipBuilderState extends State<SuperTooltipBuilder> {
         }
         return true;
       },
-      child: widget.targetBuilder(
-        context,
-        ({overlay, key}) => _show(context, overlay: overlay, key: key),
+      child: CompositedTransformTarget(
+        link: _layerLink,
+        child: widget.targetBuilder(
+          context,
+          ({overlay, key}) => _show(context, overlay: overlay, key: key),
+          _remove,
+        ),
       ),
     );
   }
@@ -231,8 +250,8 @@ class __SuperTooltipState extends State<_SuperTooltip> {
           .getMargin(widget.tooltip.arrowDecoration.distanceAway),
       clipBehavior: Clip.hardEdge,
       decoration: ShapeDecoration(
-        // shadows: widget.tooltip.boxShadow ??
-        //     kElevationToShadow[widget.tooltip.elevation],
+        shadows: widget.tooltip.boxShadow ??
+            kElevationToShadow[widget.tooltip.elevation],
         shape: BubbleShape(
           backgroundColor: widget.tooltip.tipContent.backgroundColor,
           targetCenter: widget.targetCenter,
@@ -259,6 +278,11 @@ class __SuperTooltipState extends State<_SuperTooltip> {
       curve: Curves.easeInOut,
       child: Center(
         child: Stack(
+          fit: (relativePosition.hasSnaps &&
+                  widget.tooltip.closeTipObject.position.isNone)
+              ? StackFit.expand
+              : StackFit.passthrough,
+          clipBehavior: Clip.none,
           children: [
             if (widget.tooltip.background != null)
               Positioned.fill(
@@ -271,19 +295,10 @@ class __SuperTooltipState extends State<_SuperTooltip> {
             Positioned.fill(
               child: CustomSingleChildLayout(
                 delegate: PopupBalloonLayoutDelegate(
-                  targetCenter: widget.targetCenter,
-                  tipConstraints: TipConstraints(
-                    minWidth: widget.tooltip.constraints?.minWidth,
-                    maxWidth: relativePosition.snapsHorizontal
-                        ? null
-                        : widget.tooltip.constraints?.maxWidth,
-                    minHeight: widget.tooltip.constraints?.minHeight,
-                    maxHeight: relativePosition.snapsVertical
-                        ? null
-                        : widget.tooltip.constraints?.maxHeight,
-                  ),
-                  margin: widget.tooltip.tipContent.margin,
+                  widget.tooltip,
+                  direction: absolutePosition.direction,
                   position: absolutePosition,
+                  targetCenter: widget.targetCenter,
                 ),
                 child: Stack(
                   fit: (relativePosition.hasSnaps &&
@@ -296,14 +311,15 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                       Positioned.fill(child: content)
                     else
                       content,
-                    CloseObject(
-                      widget.tooltip,
-                      direction: absolutePosition.direction,
-                      close: _close,
-                    ),
                   ],
                 ),
               ),
+            ),
+            CloseObject(
+              widget.tooltip,
+              direction: absolutePosition.direction,
+              targetCenter: widget.targetCenter,
+              close: _close,
             ),
           ],
         ),

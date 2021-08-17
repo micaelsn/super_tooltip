@@ -3,26 +3,27 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:super_tooltip/src/models/absolute_position.dart';
-import 'package:super_tooltip/src/models/tip_constraints.model.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
 import 'models/enums/public_enums.dart';
 
 class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
-  PopupBalloonLayoutDelegate({
-    required this.targetCenter,
-    this.tipConstraints,
-    this.margin = const EdgeInsets.all(0),
+  PopupBalloonLayoutDelegate(
+    this.tooltip, {
+    required this.direction,
     required this.position,
+    required this.targetCenter,
   });
 
-  final Offset targetCenter;
-  final TipConstraints? tipConstraints;
+  final SuperTooltip tooltip;
+  final TipDirection direction;
   final AbsolutePosition position;
-  final EdgeInsets margin;
+  final Offset targetCenter;
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
+    final margin = tooltip.tipContent.margin;
+
     double? calcLeftMostXtoTarget() {
       double? leftMostXtoTarget;
       final left = position.left;
@@ -98,6 +99,8 @@ class PopupBalloonLayoutDelegate extends SingleChildLayoutDelegate {
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
     // print("ParentConstraints: $constraints");
+    final tipConstraints = tooltip.constraints;
+    final margin = tooltip.tipContent.margin;
 
     var calcMinWidth = tipConstraints?.minWidth ?? 0.0;
     var calcMaxWidth = tipConstraints?.maxWidth ?? double.infinity;
