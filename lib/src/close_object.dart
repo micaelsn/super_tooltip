@@ -28,61 +28,77 @@ class CloseObject extends StatelessWidget {
 
         if (closePosition == null) return const SizedBox(height: 0);
 
-        double? right, top;
+        double? x, y;
         var _wrapInSafeArea = true;
         final hasSnaps = tooltip.tipContent.position.hasSnaps;
+        final minDistance = tooltip.arrowDecoration.distanceAway;
 
         switch (direction) {
           case TipDirection.left:
             if (hasSnaps) {
-              top = closeObject.margin.top;
-            } else
-              top = -closeObject.height + extraPadding + closeObject.margin.top;
-            final minDistance = tooltip.arrowDecoration.distanceAway;
-            right = minDistance +
-                (minDistance - closeObject.width) +
-                (extraPadding - 2) +
-                closeObject.margin.right;
-            if (closePosition.isOutside) right += -closeObject.width + 1;
+              y = closeObject.margin.top;
+            } else {
+              _wrapInSafeArea = false;
+              y = closeObject.margin.top;
+            }
+
+            closePositionHandler(
+              closePosition,
+              inside: () {
+                x = minDistance + closeObject.margin.left;
+              },
+              outside: () {
+                x = minDistance -
+                    closeObject.width -
+                    1 -
+                    closeObject.margin.left;
+              },
+            );
+
             break;
 
           case TipDirection.right:
-            right = closeObject.margin.right;
+            x = closeObject.margin.right;
 
             if (hasSnaps) {
-              top = closeObject.margin.top;
+              y = closeObject.margin.top;
             } else if (closePosition.isOutside) {
-              top = -(closeObject.height * 2) -
+              y = -(closeObject.height * 2) -
                   -extraPadding -
                   closeObject.margin.top;
             } else {
-              top = -closeObject.height + extraPadding + closeObject.margin.top;
+              y = -closeObject.height + extraPadding + closeObject.margin.top;
             }
             break;
           case TipDirection.up:
-            right = closeObject.margin.right;
-
+            x = closeObject.margin.right;
             if (hasSnaps) {
-              top = closeObject.margin.top;
-            } else if (closePosition.isOutside) {
-              top = (-closeObject.height + (extraPadding * 2)) -
-                  closeObject.margin.top;
-            } else {
-              top = -closeObject.height + extraPadding + closeObject.margin.top;
+              y = closeObject.margin.top;
             }
+            closePositionHandler(
+              closePosition,
+              inside: () {
+                y = -minDistance + closeObject.margin.top;
+              },
+              outside: () {
+                y = (-closeObject.height + (extraPadding * 2)) -
+                    closeObject.margin.top;
+              },
+            );
+            // y = 0;
+
             break;
 
           // DOWN: -------------------------------------
           case TipDirection.down:
             // If this value gets negative the Shadow gets clipped. The problem occurs is arrowlength + arrowTipDistance
             // is smaller than _outSideCloseButtonPadding which would mean arrowLength would need to be increased if the button is ouside.
-            right = closeObject.margin.right;
+            x = closeObject.margin.right;
             _wrapInSafeArea = false;
             if (closePosition.isInside) {
-              top =
-                  tooltip.arrowDecoration.distanceAway + closeObject.margin.top;
+              y = tooltip.arrowDecoration.distanceAway + closeObject.margin.top;
             } else {
-              top = -tooltip.closeTipObject.height +
+              y = -tooltip.closeTipObject.height +
                   tooltip.arrowDecoration.distanceAway -
                   closeObject.margin.bottom -
                   1;
@@ -100,8 +116,8 @@ class CloseObject extends StatelessWidget {
         );
 
         return Positioned(
-          right: right,
-          top: top,
+          right: x,
+          top: y,
           child: GestureDetector(
             onTap: close,
             child: AbsorbPointer(

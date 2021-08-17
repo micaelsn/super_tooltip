@@ -188,12 +188,7 @@ class __SuperTooltipState extends State<_SuperTooltip> {
     final margin = closeObject.margin;
     if (closeObject.position?.isInside ?? false) {
       var _contentRight = 0.0;
-      var _contentTop = closeObject.height + margin.top + margin.bottom;
-
-      if (relativePosition.hasSnaps &&
-          relativePosition.hasPreference &&
-          absolutePosition.direction.isDown)
-        _contentTop = _contentTop - widget.tooltip.arrowDecoration.distanceAway;
+      final _contentTop = closeObject.height + margin.top + margin.bottom;
 
       /// Handling snap far away feature.
       if (relativePosition.snapsHorizontal &&
