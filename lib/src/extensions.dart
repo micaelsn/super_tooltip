@@ -5,6 +5,7 @@ import 'package:super_tooltip/super_tooltip.dart';
 extension CloseButtonPositionExtension on ClosePosition {
   bool get isInside => this == ClosePosition.inside;
   bool get isOutside => this == ClosePosition.outside;
+  bool get isNone => this == ClosePosition.none;
 }
 
 extension TipDirectionExt on TipDirection {
@@ -82,5 +83,21 @@ extension TipDirectionExt on TipDirection {
       case TipDirection.right:
         return EdgeInsets.only(left: distanceAway);
     }
+  }
+}
+
+typedef CloseMethod<T> = T Function();
+
+T closePositionHandler<T>(
+  ClosePosition position, {
+  required CloseMethod<T> inside,
+  required CloseMethod<T> outside,
+}) {
+  switch (position) {
+    case ClosePosition.outside:
+      return outside();
+    case ClosePosition.inside:
+    default:
+      return inside();
   }
 }

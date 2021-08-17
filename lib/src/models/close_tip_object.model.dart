@@ -26,14 +26,14 @@ class CloseTipObject {
   }) : position = ClosePosition.outside;
 
   const CloseTipObject.none()
-      : position = null,
+      : position = ClosePosition.none,
         child = null,
         margin = const EdgeInsets.all(4),
         height = 0,
         width = 0;
 
   /// The position of the close button, set to null to hide the close button
-  final ClosePosition? position;
+  final ClosePosition position;
 
   /// The widget that is used to close the Tooltip
   ///

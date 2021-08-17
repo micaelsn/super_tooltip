@@ -26,7 +26,9 @@ class CloseObject extends StatelessWidget {
         final closeObject = tooltip.closeTipObject;
         final closePosition = closeObject.position;
 
-        if (closePosition == null) return const SizedBox(height: 0);
+        if (closePosition.isNone) {
+          return const Positioned(child: SizedBox(height: 0));
+        }
 
         double? x, y;
         var _wrapInSafeArea = true;

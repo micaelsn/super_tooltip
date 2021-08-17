@@ -8,6 +8,7 @@ enum TipDirection {
 enum ClosePosition {
   inside,
   outside,
+  none,
 }
 
 enum SnapAxis {

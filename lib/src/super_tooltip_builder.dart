@@ -186,14 +186,14 @@ class __SuperTooltipState extends State<_SuperTooltip> {
     );
 
     final margin = closeObject.margin;
-    if (closeObject.position?.isInside ?? false) {
+    if (closeObject.position.isInside) {
       var _contentRight = 0.0;
       final _contentTop = closeObject.height + margin.top + margin.bottom;
 
       /// Handling snap far away feature.
       if (relativePosition.snapsHorizontal &&
           !relativePosition.hasPreference &&
-          (closeObject.position?.isInside ?? false)) {
+          (closeObject.position.isInside)) {
         _contentRight = closeObject.width;
       }
 
@@ -212,9 +212,6 @@ class __SuperTooltipState extends State<_SuperTooltip> {
 
     Widget content = Material(
       type: MaterialType.transparency,
-      borderRadius:
-          BorderRadius.circular(widget.tooltip.borderDecoration?.radius ?? 0),
-      clipBehavior: Clip.hardEdge,
       child: Padding(
         padding: contentPadding,
         child: Container(
@@ -227,15 +224,15 @@ class __SuperTooltipState extends State<_SuperTooltip> {
         ),
       ),
     );
+
     final _content = widget.tooltip.tipContent;
     content = Container(
       margin: absolutePosition.direction
           .getMargin(widget.tooltip.arrowDecoration.distanceAway),
       clipBehavior: Clip.hardEdge,
       decoration: ShapeDecoration(
-        color: widget.tooltip.tipContent.backgroundColor,
-        shadows: widget.tooltip.boxShadow ??
-            kElevationToShadow[widget.tooltip.elevation],
+        // shadows: widget.tooltip.boxShadow ??
+        //     kElevationToShadow[widget.tooltip.elevation],
         shape: BubbleShape(
           backgroundColor: widget.tooltip.tipContent.backgroundColor,
           targetCenter: widget.targetCenter,
@@ -289,7 +286,10 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                   position: absolutePosition,
                 ),
                 child: Stack(
-                  fit: StackFit.passthrough,
+                  fit: (relativePosition.hasSnaps &&
+                          widget.tooltip.closeTipObject.position.isNone)
+                      ? StackFit.expand
+                      : StackFit.passthrough,
                   clipBehavior: Clip.none,
                   children: [
                     if (relativePosition.hasSnaps)
