@@ -278,11 +278,6 @@ class __SuperTooltipState extends State<_SuperTooltip> {
       curve: Curves.easeInOut,
       child: Center(
         child: Stack(
-          fit: (relativePosition.hasSnaps &&
-                  widget.tooltip.closeTipObject.position.isNone)
-              ? StackFit.expand
-              : StackFit.passthrough,
-          clipBehavior: Clip.none,
           children: [
             if (widget.tooltip.background != null)
               Positioned.fill(
@@ -311,15 +306,15 @@ class __SuperTooltipState extends State<_SuperTooltip> {
                       Positioned.fill(child: content)
                     else
                       content,
+                    CloseObject(
+                      widget.tooltip,
+                      direction: absolutePosition.direction,
+                      targetCenter: widget.targetCenter,
+                      close: _close,
+                    ),
                   ],
                 ),
               ),
-            ),
-            CloseObject(
-              widget.tooltip,
-              direction: absolutePosition.direction,
-              targetCenter: widget.targetCenter,
-              close: _close,
             ),
           ],
         ),
